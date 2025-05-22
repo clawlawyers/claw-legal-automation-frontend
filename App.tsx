@@ -7,8 +7,9 @@ import HomeStackNavigator from './src/stacks/Home';
 import AddNewUserStackNavigator from './src/stacks/AddNewUser';
 import OrderHistoryStackNavigator from './src/stacks/OrderHistory';
 import AccountStackNavigator from './src/stacks/Account';
-import {Provider} from 'react-redux';
-import {store} from './src/redux/store';
+// import {Provider} from 'react-redux';
+// import {store} from './src/redux/store';
+import MainStack from './src/stacks/MainStack';
 
 // ================== Type Definitions ==================
 
@@ -48,7 +49,8 @@ const App: React.FC = () => {
     //   {/* <FirmAccordion /> */}
     //   <AppInner />
     // </Provider>
-    <AppInner />
+    // <AppInner />
+    <MainStack />
   );
 };
 
