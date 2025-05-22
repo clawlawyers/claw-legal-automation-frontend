@@ -1,8 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useRef} from 'react';
 import {View, Text, Animated, Easing} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 const SplashScreen = () => {
+  const navigation = useNavigation<any>();
+
   const fillAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -12,9 +16,11 @@ const SplashScreen = () => {
         duration: 2000,
         easing: Easing.out(Easing.ease),
         useNativeDriver: false,
-      }).start();
+      }).start(() => {
+        // ✅ Navigate to LoginScreen after animation completes
+        navigation.replace('LoginScreen');
+      });
     }, 1000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const animatedFill = fillAnim.interpolate({
