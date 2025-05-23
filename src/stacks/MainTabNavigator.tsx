@@ -11,7 +11,6 @@ import SettingsScreen from '../screens/Home/SettingsScreen';
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-  console.log('hhhhhh');
   return (
     <Tab.Navigator
       tabBar={props => <MyTabBar {...props} />}

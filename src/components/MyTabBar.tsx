@@ -1,22 +1,36 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, TouchableOpacity, Text, Dimensions} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+import {View, TouchableOpacity, Text, Dimensions, Image} from 'react-native';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {useNavigationState} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
-const iconsMap: Record<string, {icon: string; label: string}> = {
-  Home: {icon: 'home', label: 'Home'},
-  Status: {icon: 'tasks', label: 'Your Status'},
-  Alerts: {icon: 'bell', label: 'Your Alerts'},
-  Account: {icon: 'user', label: 'Your Account'},
-  Settings: {icon: 'cog', label: 'Settings'},
+// Updated to use local images
+const iconsMap: Record<string, {icon: any; label: string}> = {
+  Home: {
+    icon: require('../assets/Firsttab.png'), // Your local image
+    label: 'Home',
+  },
+  Status: {
+    icon: require('../assets/Secondtab.png'),
+    label: 'Status',
+  },
+  Alerts: {
+    icon: require('../assets/third.png'),
+    label: 'Alerts',
+  },
+  Account: {
+    icon: require('../assets/youraccount.png'),
+    label: 'Your Account',
+  },
+  Settings: {
+    icon: require('../assets/settings.png'),
+    label: 'Settings',
+  },
 };
 
 const HIDDEN_ROUTES = ['Splash'];
-
-console.log('Mytab consleo');
 
 const MyTabBar: React.FC<BottomTabBarProps> = ({
   state,
@@ -33,16 +47,12 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({
 
   const shouldHide = HIDDEN_ROUTES.includes(nestedRouteName);
 
-  // if (shouldHide || nestedRouteName === undefined) {
-  //   return null;
-  // }
-
   if (shouldHide) {
     return null;
   }
 
   return (
-    <View className="flex-row justify-around bg-[#26272c] py-3">
+    <View className="flex-row justify-around bg-[#0B1B20] pt-3 pb-4">
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const isFocused = state.index === index;
@@ -60,7 +70,7 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({
         };
 
         const {icon, label} = iconsMap[route.name] || {
-          icon: 'circle',
+          icon: require('../assets/Firsttab.png'), // Fallback image
           label: route.name,
         };
 
@@ -69,24 +79,24 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({
             key={index}
             accessibilityRole="button"
             onPress={onPress}
-            className="items-center flex-1">
-            <View
-              className={`items-center justify-center ${
-                isFocused
-                  ? 'bg-[#e49a4c] p-4 rounded-full -mt-8 border-[6px] border-[#FAD9B3]'
-                  : ''
-              }`}>
-              <FontAwesome
-                name={icon}
-                size={20}
-                color={isFocused ? 'white' : 'white'}
+            className="items-center flex-1 border-0">
+            <View className="items-center mb-0.5justify-center">
+              <Image
+                source={icon}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: isFocused ? '#006261' : '#FFFFFF',
+                }}
+                resizeMode="contain"
               />
             </View>
             <Text
-              className={`text-xs mt-1 ${
-                isFocused ? 'text-white font-semibold' : 'text-white/70'
+              style={{fontSize: 10, fontFamily: 'SpaceGrotesk-Bold'}}
+              className={` justify-center font-spacegrotesk mt-1 ${
+                isFocused ? 'text-[#006261] font-semibold' : 'text-white'
               }`}>
-              {isFocused ? '' : label}
+              {label}
             </Text>
           </TouchableOpacity>
         );
