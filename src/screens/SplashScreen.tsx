@@ -17,7 +17,6 @@ const SplashScreen = () => {
         easing: Easing.out(Easing.ease),
         useNativeDriver: false,
       }).start(() => {
-        // ✅ Navigate to LoginScreen after animation completes
         navigation.replace('LoginScreen');
       });
     }, 1000);

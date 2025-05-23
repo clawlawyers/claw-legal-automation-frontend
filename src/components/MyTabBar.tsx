@@ -1,5 +1,3 @@
-// src/components/CustomTabBar.tsx
-
 import React from 'react';
 import {View, TouchableOpacity, Text, Dimensions} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
@@ -10,57 +8,38 @@ const {width} = Dimensions.get('window');
 
 const iconsMap: Record<string, {icon: string; label: string}> = {
   Home: {icon: 'home', label: 'Home'},
-  AddNewUser: {icon: 'user-plus', label: 'Add User'},
-  OrderHistory: {icon: 'list-alt', label: 'Order History'},
-  Account: {icon: 'user-cog', label: 'Account'},
+  Status: {icon: 'tasks', label: 'Your Status'},
+  Alerts: {icon: 'bell', label: 'Your Alerts'},
+  Account: {icon: 'user', label: 'Your Account'},
+  Settings: {icon: 'cog', label: 'Settings'},
 };
 
-const HIDDEN_ROUTES = [
-  'NewPassword',
-  'OptVerification',
-  'ResetPassword',
-  'Onboarding',
-  'Login',
-  'Signup',
-  'OtpVerificationScreen',
-  'SuccessScreen',
-  'Details',
-  'StockManagement',
-  'EditInventoryProduct',
-  'AddInventoryProduct',
-  'UploadCSVScreen',
-  'InventoryMappingScreen',
-  'InventoryEmptyScreen',
-  'AddInventoryScreen',
-  'InventoryProductList',
-  'InventoryProductDetails',
-];
+const HIDDEN_ROUTES = ['Splash'];
 
-const CustomTabBar: React.FC<BottomTabBarProps> = ({
+console.log('Mytab consleo');
+
+const MyTabBar: React.FC<BottomTabBarProps> = ({
   state,
   descriptors,
   navigation,
 }) => {
-  const CostomeState = useNavigationState(state => state);
-  console.log(CostomeState);
-
-  const currentTabIndex = CostomeState?.index;
-  const currentRoute = CostomeState?.routes[currentTabIndex];
+  const currentState = useNavigationState(state => state);
+  const currentTabIndex = currentState?.index;
+  const currentRoute = currentState?.routes[currentTabIndex];
 
   const nestedState = currentRoute?.state as any;
   const nestedRouteName =
     nestedState?.routes?.[nestedState.index]?.name ?? currentRoute?.name;
 
-  console.log('Nested Route Name:', nestedRouteName);
-  const shouldHide1 = HIDDEN_ROUTES.includes(nestedRouteName);
+  const shouldHide = HIDDEN_ROUTES.includes(nestedRouteName);
 
-  if (shouldHide1 || nestedRouteName === undefined) {
-    return null; // Don't render tab bar
+  if (shouldHide || nestedRouteName === undefined) {
+    return null;
   }
 
   return (
-    <View className="flex-row justify-around bg-[#26272c] py-3 ">
-      {CostomeState?.routes.map((route, index) => {
+    <View className="flex-row justify-around bg-[#26272c] py-3">
+      {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const isFocused = state.index === index;
 
@@ -70,6 +49,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
             target: route.key,
             canPreventDefault: true,
           });
+
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name);
           }
@@ -87,9 +67,9 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
             onPress={onPress}
             className="items-center flex-1">
             <View
-              className={`items-center  justify-center ${
+              className={`items-center justify-center ${
                 isFocused
-                  ? 'bg-[#e49a4c] p-4 rounded-full -mt-8 border-[6px] border-[#FAD9B3] '
+                  ? 'bg-[#e49a4c] p-4 rounded-full -mt-8 border-[6px] border-[#FAD9B3]'
                   : ''
               }`}>
               <FontAwesome
@@ -111,4 +91,4 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
   );
 };
 
-export default CustomTabBar;
+export default MyTabBar;
