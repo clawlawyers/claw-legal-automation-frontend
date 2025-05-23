@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
+import React from 'react';
 import {
   View,
   Text,
@@ -10,6 +11,15 @@ import {
 import Carousel from 'react-native-reanimated-carousel';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
+
+// Import the param list type from HomeStack
+import {HomeStackParamList} from '../../stacks/HomeStack';
+
+type HomeScreenNavigationProp = NavigationProp<
+  HomeStackParamList,
+  'HomeScreen'
+>;
 
 const updates = [
   {
@@ -23,6 +33,7 @@ const updates = [
 
 export default function HomeScreen() {
   const {width} = useWindowDimensions();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
 
   return (
     <View className="flex-1 bg-[#002b2b]">
@@ -106,6 +117,7 @@ export default function HomeScreen() {
             {
               label: 'Start Case Search',
               icon: require('../../assets/images/button2.png'),
+              onPress: () => navigation.navigate('StartCaseSearch'),
             },
             {
               label: 'Get Cause List',
@@ -115,9 +127,11 @@ export default function HomeScreen() {
               label: 'Start Caveat Search',
               icon: require('../../assets/images/button4.png'),
             },
-          ].map(({label, icon}, index) => (
+          ].map(({label, icon, onPress}, index) => (
             <View key={index} className="w-[48%]">
-              <TouchableOpacity className="bg-[#002b2b] border border-[#016361] rounded-xl p-4 py-6">
+              <TouchableOpacity
+                onPress={onPress ?? (() => {})}
+                className="bg-[#002b2b] border border-[#016361] rounded-xl p-4 py-6">
                 <View className="flex-col items-start">
                   <Image source={icon} className="w-6 h-6 resize-contain" />
                   <Text
