@@ -33,7 +33,11 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({
 
   const shouldHide = HIDDEN_ROUTES.includes(nestedRouteName);
 
-  if (shouldHide || nestedRouteName === undefined) {
+  // if (shouldHide || nestedRouteName === undefined) {
+  //   return null;
+  // }
+
+  if (shouldHide) {
     return null;
   }
 
