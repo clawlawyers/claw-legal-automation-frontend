@@ -3,11 +3,19 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from '../screens/Home/Screen1';
 import StartCaseSearch from '../screens/Home/StartCaseSearch';
+import CaseLoadingScreen from '../screens/Home/CaseLoadingScreen';
+import CaseDetailsScreen from '../screens/Home/CaseDetailsScreen';
+import CaseAddedScreen from '../screens/Home/CaseAddedScreen';
+import CaseNotFoundScreen from '../screens/Home/CaseNotFound';
 
 // Define your param list with route names and their params (undefined if none)
 export type HomeStackParamList = {
   HomeScreen: undefined;
   StartCaseSearch: undefined;
+  CaseLoadingScreen: undefined;
+  CaseDetailsScreen: undefined;
+  CaseAddedScreen: undefined;
+  CaseNotFoundScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
@@ -19,6 +27,10 @@ const HomeStack = () => {
       screenOptions={{headerShown: false}}>
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen name="StartCaseSearch" component={StartCaseSearch} />
+      <Stack.Screen name="CaseLoadingScreen" component={CaseLoadingScreen} />
+      <Stack.Screen name="CaseDetailsScreen" component={CaseDetailsScreen} />
+      <Stack.Screen name="CaseAddedScreen" component={CaseAddedScreen} />
+      <Stack.Screen name="CaseNotFoundScreen" component={CaseNotFoundScreen} />
     </Stack.Navigator>
   );
 };
