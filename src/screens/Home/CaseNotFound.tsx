@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
@@ -6,6 +6,13 @@ import Icon from 'react-native-vector-icons/Feather';
 
 const CaseNotFoundScreen = () => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('NoCasesAdded');
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [navigation]);
 
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">

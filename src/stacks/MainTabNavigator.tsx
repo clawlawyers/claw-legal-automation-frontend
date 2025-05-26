@@ -30,10 +30,11 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MyTabBar from '../components/MyTabBar';
 import HomeStack from './HomeStack'; // Updated import
-import StatusScreen from '../screens/Home/StatusScreen';
 import AlertsScreen from '../screens/Home/AlertsScreen';
 import AccountScreen from '../screens/Home/AccountScreen';
 import SettingsScreen from '../screens/Home/SettingsScreen';
+import NoCasesAdded from '../screens/Home/NoCasesAdded';
+import YourCasesStack from './YourCasesStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +44,7 @@ const TabNavigator = () => {
       tabBar={props => <MyTabBar {...props} />}
       screenOptions={{headerShown: false}}>
       <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="Status" component={StatusScreen} />
+      <Tab.Screen name="YourCases" component={YourCasesStack} />
       <Tab.Screen name="Alerts" component={AlertsScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />

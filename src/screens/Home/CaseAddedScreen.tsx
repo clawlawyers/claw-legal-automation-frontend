@@ -50,7 +50,7 @@ const CaseAddedScreen = () => {
           end={{x: 1, y: 0}}
           className="h-12 w-full justify-center items-center rounded-xl">
           <Pressable
-            onPress={() => navigation.navigate('YourCasesScreen')}
+            onPress={() => navigation.navigate('YourCasesListScreen')}
             className="w-full h-full justify-center items-center">
             <Text
               style={{fontFamily: 'SpaceGrotesk-Bold'}}
