@@ -111,7 +111,7 @@ const AssociationScreen = () => {
           end={{x: 1, y: 0}}
           className="w-full h-12 justify-center items-center rounded-lg overflow-hidden">
           <Pressable
-            onPress={() => navigation.navigate('CaseNotFoundScreen')}
+            onPress={() => navigation.navigate('ClientDetailsScreen')}
             className="w-full h-full justify-center items-center"
             android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
             <Text
