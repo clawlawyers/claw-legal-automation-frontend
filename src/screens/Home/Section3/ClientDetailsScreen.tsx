@@ -12,9 +12,19 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {HomeStackParamList} from '../../../stacks/HomeStack';
+
+type AddClientScreenProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'AddClientScreen'
+>;
 
 const AddClientScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AddClientScreenProp>();
+
+  // const AddClientScreen = () => {
+  //   const navigation = useNavigation();
   const [selectedOption, setSelectedOption] = useState('email');
 
   const communicationOptions = [

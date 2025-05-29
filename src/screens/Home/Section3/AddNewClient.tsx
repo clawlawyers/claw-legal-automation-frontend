@@ -9,9 +9,10 @@ import {
   TextInput,
   Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {HomeStackParamList} from '../../../stacks/HomeStack';
 
 const clients = [
   'Sophia Tran',
@@ -21,8 +22,14 @@ const clients = [
   'Lily Evans',
 ];
 
+type AddNewClientScreenProps = NavigationProp<
+  HomeStackParamList,
+  'StartCaseSearch'
+>;
+
 const AddNewClientScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AddNewClientScreenProps>();
+
   const [selected, setSelected] = useState<string[]>([]);
 
   const toggleSelection = (name: string) => {

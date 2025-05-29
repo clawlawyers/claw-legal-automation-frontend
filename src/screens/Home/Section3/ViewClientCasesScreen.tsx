@@ -300,7 +300,7 @@ const ViewClientCasesScreen = () => {
           <Pressable
             className="w-full h-full justify-center items-center"
             android_ripple={{color: 'rgba(255,255,255,0.2)'}}
-            onPress={() => Alert.alert('Section 2 Copmpleted success')}>
+            onPress={() => navigation.navigate('NoActiveAlertsScreen')}>
             <Text
               className="text-white"
               style={{fontFamily: 'SpaceGrotesk-Bold'}}>

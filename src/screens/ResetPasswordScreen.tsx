@@ -62,7 +62,7 @@ const ResetPasswordScreen = () => {
       {/* Fixed bottom button */}
       <View className="mb-8">
         <TouchableOpacity
-          onPress={() => navigation.navigate('Splash')}
+          onPress={() => navigation.navigate('MainTabs')}
           style={{
             width: '100%',
             borderRadius: 8,

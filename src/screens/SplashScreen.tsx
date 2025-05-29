@@ -17,7 +17,7 @@ const SplashScreen = () => {
         easing: Easing.out(Easing.ease),
         useNativeDriver: false,
       }).start(() => {
-        navigation.replace('LoginScreen');
+        navigation.replace('StartScreen');
       });
     }, 1000);
   }, []);

@@ -1,19 +1,20 @@
 /* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, {useEffect, useRef} from 'react';
 import {View, Text, Animated, Easing} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
-import {HomeStackParamList} from '../../stacks/HomeStack'; // Adjust import path as needed
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-type CaseLoadingNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  'CaseLoadingScreen'
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
+
+type FetchingJudgementsProp = NativeStackNavigationProp<
+  YourAlertsStackParamList,
+  'FetchingJudgements'
 >;
 
-const CaseLoadingScreen = () => {
-  const navigation = useNavigation<CaseLoadingNavigationProp>();
+const FetchingJudgements = () => {
+  const navigation = useNavigation<FetchingJudgementsProp>();
   const spinValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const CaseLoadingScreen = () => {
 
     // Set timeout for navigation
     const timer = setTimeout(() => {
-      navigation.navigate('CaseDetailsScreen');
+      navigation.navigate('JudgementsFetched');
     }, 3000); // 3 seconds delay
 
     return () => {
@@ -50,7 +51,7 @@ const CaseLoadingScreen = () => {
       className="flex-1 justify-center items-center p-5">
       <View className="items-center">
         <Animated.Image
-          source={require('../../assets/casesearch.png')}
+          source={require('../../../assets/casesearch.png')}
           style={{
             width: 150,
             height: 150,
@@ -62,21 +63,16 @@ const CaseLoadingScreen = () => {
         <Text
           style={{fontFamily: 'SpaceGrotesk-Bold'}}
           className="text-2xl text-[#01B679] mb-4 text-center">
-          Fetching Case
+          Fetching Judgments
         </Text>
         <Text
           style={{fontFamily: 'SpaceGrotesk'}}
           className="text-lg text-white text-center mb-2">
-          Please Wait. It Might Take 1 - 3 Minutes
-        </Text>
-        <Text
-          style={{fontFamily: 'SpaceGrotesk'}}
-          className="text-base text-gray-400 text-center">
-          Only To Fetch Your Case
+          Please wait, It Might take 1 - 3 Minutes Only To Fetch Your Judgements
         </Text>
       </View>
     </LinearGradient>
   );
 };
 
-export default CaseLoadingScreen;
+export default FetchingJudgements;

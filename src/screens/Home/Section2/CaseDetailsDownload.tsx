@@ -4,9 +4,17 @@ import {View, Text, Pressable, SafeAreaView, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+import {HomeStackParamList} from '../../../stacks/HomeStack';
+
+type CaseDetailsDownloadScreenProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'CaseDetailsDownloadScreen'
+>;
 
 const CaseDetailsDownloadScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<CaseDetailsDownloadScreenProp>();
 
   const caseFields = [
     {
@@ -144,30 +152,54 @@ const CaseDetailsDownloadScreen = () => {
       </ScrollView>
 
       {/* Associated Client Styled Row */}
+
       <LinearGradient
         colors={['#016361', '#01B779']}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}
-        style={{borderRadius: 8, padding: 1, marginTop: 12}}>
+        style={{borderRadius: 8, padding: 1, marginBottom: 20}} // Border thickness via padding
+      >
         <View
           style={{
-            backgroundColor: '#062C2D',
-            borderRadius: 8,
-            paddingVertical: 12,
-            paddingHorizontal: 16,
             flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            borderRadius: 8,
+            overflow: 'hidden',
+            width: '100%',
           }}>
-          <View>
+          {/* Left Half - Gradient Background */}
+          <LinearGradient
+            colors={['#00C47E', '#00B288']}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={{
+              width: '50%',
+              paddingVertical: 12,
+              paddingHorizontal: 12,
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+            }}>
             <Text
-              style={{fontFamily: 'SpaceGrotesk-Bold'}}
-              className="text-white text-base">
-              Associated Client:
+              style={{
+                fontFamily: 'SpaceGrotesk-Bold',
+                color: 'white',
+                fontSize: 14,
+              }}>
+              Associated Client :
             </Text>
-          </View>
+          </LinearGradient>
 
-          <Pressable onPress={() => console.log('Add client')}>
+          {/* Right Half - Solid Color */}
+          <Pressable
+            onPress={() => console.log('Add client')}
+            style={{
+              width: '50%',
+              backgroundColor: '#062C2D',
+              paddingVertical: 12,
+              paddingHorizontal: 12,
+              justifyContent: 'center',
+              // alignItems: 'flex-end',
+              alignItems: 'center',
+            }}>
             <Text
               style={{fontFamily: 'SpaceGrotesk-SemiBold'}}
               className="text-[#01B679] text-base">
@@ -187,7 +219,7 @@ const CaseDetailsDownloadScreen = () => {
             end={{x: 1, y: 0}}
             className="rounded-xl">
             <Pressable
-              onPress={() => navigation.navigate('AssociationScreen')}
+              onPress={() => navigation.navigate('SendCaseDetailsScreen')}
               className="h-12 justify-center items-center"
               android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
               <Text

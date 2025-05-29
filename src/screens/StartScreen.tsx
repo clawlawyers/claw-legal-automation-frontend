@@ -3,6 +3,8 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon1 from 'react-native-vector-icons/Feather';
 // import {useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+
 import LinearGradient from 'react-native-linear-gradient';
 
 const onboardingData = [
@@ -36,12 +38,22 @@ const onboardingData = [
   },
 ];
 const StartScreen = () => {
+  const navigation = useNavigation();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const insets = useSafeAreaInsets();
+
+  // const handleNext = () => {
+  //   if (currentIndex < onboardingData.length - 1) {
+  //     setCurrentIndex(currentIndex + 1);
+  //   }
 
   const handleNext = () => {
     if (currentIndex < onboardingData.length - 1) {
       setCurrentIndex(currentIndex + 1);
+    } else {
+      // Navigate to LoginScreen when onboarding ends
+      navigation.navigate('LoginScreen');
     }
   };
 

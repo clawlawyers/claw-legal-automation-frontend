@@ -1,10 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, TouchableOpacity, Text, Dimensions, Image} from 'react-native';
+import {View, TouchableOpacity, Text, Image} from 'react-native';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {useNavigationState} from '@react-navigation/native';
-
-const {width} = Dimensions.get('window');
 
 // Updated to use local images
 const iconsMap: Record<string, {icon: any; label: string}> = {
@@ -12,9 +10,9 @@ const iconsMap: Record<string, {icon: any; label: string}> = {
     icon: require('../assets/Firsttab.png'), // Your local image
     label: 'Home',
   },
-  Status: {
+  YourCases: {
     icon: require('../assets/Secondtab.png'),
-    label: 'Status',
+    label: 'Your Cases',
   },
   Alerts: {
     icon: require('../assets/third.png'),
@@ -32,12 +30,8 @@ const iconsMap: Record<string, {icon: any; label: string}> = {
 
 const HIDDEN_ROUTES = ['Splash'];
 
-const MyTabBar: React.FC<BottomTabBarProps> = ({
-  state,
-  descriptors,
-  navigation,
-}) => {
-  const currentState = useNavigationState(state => state);
+const MyTabBar: React.FC<BottomTabBarProps> = ({state, navigation}) => {
+  const currentState = useNavigationState(navState => navState);
   const currentTabIndex = currentState?.index;
   const currentRoute = currentState?.routes[currentTabIndex];
 
@@ -54,7 +48,6 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({
   return (
     <View className="flex-row justify-around bg-[#0B1B20] pt-3 pb-4">
       {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
         const isFocused = state.index === index;
 
         const onPress = () => {
@@ -84,8 +77,8 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({
               <Image
                 source={icon}
                 style={{
-                  width: 24,
-                  height: 24,
+                  width: 22,
+                  height: 22,
                   tintColor: isFocused ? '#006261' : '#FFFFFF',
                 }}
                 resizeMode="contain"

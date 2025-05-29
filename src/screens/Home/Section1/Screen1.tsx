@@ -9,12 +9,9 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
-
-// Import the param list type from HomeStack
-import {HomeStackParamList} from '../../stacks/HomeStack';
+import {HomeStackParamList} from '../../../stacks/HomeStack';
 
 type HomeScreenNavigationProp = NavigationProp<
   HomeStackParamList,
@@ -46,7 +43,7 @@ export default function HomeScreen() {
               className="w-10 h-10 justify-center items-center"
               style={{borderRadius: 40}}>
               <Image
-                source={require('../../assets/images/user.png')}
+                source={require('../../../assets/images/user.png')}
                 className="w-5 h-5"
                 resizeMode="contain"
               />
@@ -65,7 +62,6 @@ export default function HomeScreen() {
               </Text>
             </View>
           </View>
-          <Ionicons name="refresh" size={20} color="red" />
         </View>
       </View>
 
@@ -106,39 +102,42 @@ export default function HomeScreen() {
           />
         </View>
         {/* White line divider */}
-        <View className="h-px bg-white opacity-20 my-6" />
+        <View className="h-px bg-white my-6" />
         {/* Buttons Section */}
         <View className="flex-row flex-wrap justify-between gap-4 mb-2">
           {[
             {
               label: 'Get All Judgements',
-              icon: require('../../assets/images/button1.png'),
+              icon: require('../../../assets/images/button1.png'),
             },
             {
-              label: 'Start Case Search',
-              icon: require('../../assets/images/button2.png'),
+              label: 'Start Case\nSearch',
+              icon: require('../../../assets/images/button2.png'),
               onPress: () => navigation.navigate('StartCaseSearch'),
             },
             {
-              label: 'Get Cause List',
-              icon: require('../../assets/images/button3.png'),
+              label: 'Get\nCause List',
+              icon: require('../../../assets/images/button3.png'),
+              // onPress: () => navigation.navigate('GetCauseList'),
             },
             {
               label: 'Start Caveat Search',
-              icon: require('../../assets/images/button4.png'),
+              icon: require('../../../assets/images/button4.png'),
             },
           ].map(({label, icon, onPress}, index) => (
             <View key={index} className="w-[48%]">
               <TouchableOpacity
                 onPress={onPress ?? (() => {})}
-                className="bg-[#002b2b] border border-[#016361] rounded-xl p-4 py-6">
+                className="bg-[#002b2b] border border-[#016361] rounded-xl p-4 py-3">
                 <View className="flex-col items-start">
-                  <Image source={icon} className="w-6 h-6 resize-contain" />
+                  <Image source={icon} className="w-9 h-9 resize-contain" />
                   <Text
-                    className="pt-8"
+                    className="pt-6"
                     style={{
                       fontFamily: 'SpaceGrotesk-Bold',
                       color: 'white',
+                      fontSize: 15,
+                      lineHeight: 20,
                     }}>
                     {label}
                   </Text>
@@ -147,8 +146,9 @@ export default function HomeScreen() {
             </View>
           ))}
         </View>
+
         {/* White line divider */}
-        <View className="h-px w-full bg-white opacity-20 my-6" />
+        <View className="h-px w-full bg-white my-4" />
         {/* Clientele Section */}
         <Text
           style={{fontFamily: 'SpaceGrotesk-Bold'}}
@@ -160,22 +160,22 @@ export default function HomeScreen() {
           {[
             {
               label: 'View All Clients',
-              image: require('../../assets/images/client1.png'),
+              image: require('../../../assets/images/client1.png'),
             },
             {
               label: 'Add New Client',
-              image: require('../../assets/images/client2.png'),
+              image: require('../../../assets/images/client2.png'),
             },
             {
               label: 'Set Up Reminder',
-              image: require('../../assets/images/client3.png'),
+              image: require('../../../assets/images/client3.png'),
             },
           ].map(({label, image}, index) => (
             <View key={index} className="w-[32%] rounded-xl overflow-hidden">
               <LinearGradient
                 colors={['#016361', '#01B779']}
                 className="flex-1 rounded-xl">
-                <TouchableOpacity className="p-4 py-8 items-start justify-center">
+                <TouchableOpacity className="p-2 items-start justify-center">
                   <LinearGradient
                     colors={['#FFFDFD', '#FFFDFD']}
                     className="w-10 h-10 justify-center items-center"
@@ -186,7 +186,10 @@ export default function HomeScreen() {
                       resizeMode="contain"
                     />
                   </LinearGradient>
-                  <Text className="text-white font-spacegrotesk text-sm mt-1">
+
+                  <Text
+                    style={{fontFamily: 'SpaceGrotesk-SemiBold'}}
+                    className="text-white pt-4 text-sm">
                     {label}
                   </Text>
                 </TouchableOpacity>

@@ -1,11 +1,19 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
 
-const CaseAddedScreen = () => {
-  const navigation = useNavigation();
+type NoActiveAlertsScreenProp = NativeStackNavigationProp<
+  YourAlertsStackParamList,
+  'NoActiveAlertsScreen'
+>;
+
+const NoActiveAlertsScreen = () => {
+  const navigation = useNavigation<NoActiveAlertsScreenProp>();
 
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">
@@ -22,8 +30,8 @@ const CaseAddedScreen = () => {
       <View className="flex-1 mt-10 ustify-center items-center">
         {/* Circle with Icon */}
         <Image
-          source={require('../../assets/casesearch.png')}
-          className="w-30 h-30"
+          source={require('../../../assets/images/noalerts.png')}
+          className="w-30 h-30 my-10"
           resizeMode="contain"
         />
 
@@ -31,14 +39,13 @@ const CaseAddedScreen = () => {
         <Text
           style={{fontFamily: 'SpaceGrotesk-Bold'}}
           className="text-xl text-[#01B779] mb-2 text-center">
-          Case Added To Your List
+          No Active Alerts
         </Text>
         <Text
           style={{fontFamily: 'SpaceGrotesk'}}
           className="text-white text-center px-4">
-          You Can Now Easily Access And Set Alert{'\n'}
-          For Cases In{' '}
-          <Text className="font-bold text-white">“Your Cases”</Text>
+          Stay tuned — Alerts from cases will{'\n'}
+          Appear Here
         </Text>
       </View>
 
@@ -50,12 +57,12 @@ const CaseAddedScreen = () => {
           end={{x: 1, y: 0}}
           className="h-12 w-full justify-center items-center rounded-xl">
           <Pressable
-            onPress={() => navigation.navigate('YourCasesListScreen')}
+            onPress={() => navigation.navigate('CreateNewCaseScreen')}
             className="w-full h-full justify-center items-center">
             <Text
               style={{fontFamily: 'SpaceGrotesk-Bold'}}
               className="text-white text-base">
-              View Your Cases
+              Create New Case Alert
             </Text>
           </Pressable>
         </LinearGradient>
@@ -64,4 +71,4 @@ const CaseAddedScreen = () => {
   );
 };
 
-export default CaseAddedScreen;
+export default NoActiveAlertsScreen;

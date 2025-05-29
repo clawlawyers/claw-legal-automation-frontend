@@ -1,9 +1,9 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import YourCasesListScreen from '../screens/Home/YourCasesListScreen'; // Adjust path
-import NoCasesAdded from '../screens/Home/NoCasesAdded';
-import CaseDetailsDownloadScreen from '../screens/Home/CaseDetailsDownload';
-import AssociationScreen from '../screens/Home/AssociationScreen';
+import YourCasesListScreen from '../screens/Home/Section2/YourCasesListScreen'; // Adjust path
+import NoCasesAdded from '../screens/Home/Section2/NoCasesAdded';
+import CaseDetailsDownloadScreen from '../screens/Home/Section2/CaseDetailsDownload';
+import AssociationScreen from '../screens/Home/Section2/AssociationScreen';
 import ClientDetailsScreen from '../screens/Home/Section3/ClientDetailsScreen';
 import ClientUpdateSuccess from '../screens/Home/Section3/ClientUpdateSuccess';
 import AddNewClientScreen from '../screens/Home/Section3/AddNewClient';
