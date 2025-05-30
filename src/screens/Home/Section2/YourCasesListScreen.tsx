@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
+import {RootTabParamList} from '../../../navigation/types';
 import React, {useState} from 'react';
 import {
   View,
@@ -7,17 +8,17 @@ import {
   TextInput,
   ScrollView,
   SafeAreaView,
-  TouchableOpacity,
   Platform,
   StatusBar,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Dropdown} from 'react-native-element-dropdown';
+import LinearGradient from 'react-native-linear-gradient';
 
 const YourCasesListScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootTabParamList>>();
 
   const [selectedParameter, setSelectedParameter] = useState<string | null>(
     null,
@@ -181,15 +182,26 @@ const YourCasesListScreen = () => {
       </ScrollView>
 
       {/* Footer */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate('CaseDetailsDownloadScreen')}
-        className="bg-[#01B779] py-4 rounded-xl mt-4 items-center justify-center">
-        <Text
-          style={{fontFamily: 'SpaceGrotesk-Bold'}}
-          className="text-white font-bold text-base">
-          Add Cases
-        </Text>
-      </TouchableOpacity>
+      <View className="mb-3 rounded-lg overflow-hidden">
+        <LinearGradient
+          colors={['#016361', '#01B779']}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 0}}
+          className="w-full h-12 justify-center items-center">
+          <Pressable
+            onPress={() =>
+              navigation.navigate('Home', {screen: 'StartCaseSearch'})
+            }
+            className="w-full h-full justify-center items-center"
+            android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
+            <Text
+              style={{fontFamily: 'SpaceGrotesk-Bold'}}
+              className="text-white font-semibold">
+              Add Cases
+            </Text>
+          </Pressable>
+        </LinearGradient>
+      </View>
     </SafeAreaView>
   );
 };

@@ -45,7 +45,11 @@ const StartCaseSearch = () => {
           <Pressable
             onPress={() => navigation.goBack()}
             className="w-9 h-9 rounded-full bg-[#062C2D] justify-center items-center">
-            <Icon name="arrow-left" size={20} color="#01B679" />
+            <Image
+              source={require('../../../assets/icons/back.png')}
+              className="w-30 h-30"
+              resizeMode="contain"
+            />
           </Pressable>
         </LinearGradient>
       </View>

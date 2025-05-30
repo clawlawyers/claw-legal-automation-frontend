@@ -1,10 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useRef} from 'react';
-import {View, Text, Animated, Easing} from 'react-native';
+import {View, Text, Animated} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
-import {HomeStackParamList} from '../../../stacks/HomeStack'; // Adjust import path as needed
+import {HomeStackParamList} from '../../../stacks/HomeStack';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type CaseLoadingNavigationProp = NativeStackNavigationProp<
@@ -14,35 +14,36 @@ type CaseLoadingNavigationProp = NativeStackNavigationProp<
 
 const CaseLoadingScreen = () => {
   const navigation = useNavigation<CaseLoadingNavigationProp>();
-  const spinValue = useRef(new Animated.Value(0)).current;
+  const blinkOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Start spinning animation
-    const spinAnimation = Animated.loop(
-      Animated.timing(spinValue, {
-        toValue: 1,
-        duration: 2000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
+    // Start blink animation
+    const blinkAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(blinkOpacity, {
+          toValue: 0.3,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(blinkOpacity, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ]),
     );
-    spinAnimation.start();
+    blinkAnimation.start();
 
-    // Set timeout for navigation
+    // Navigate after 3 seconds
     const timer = setTimeout(() => {
       navigation.navigate('CaseDetailsScreen');
-    }, 3000); // 3 seconds delay
+    }, 3000);
 
     return () => {
-      spinAnimation.stop();
-      clearTimeout(timer); // Clean up the timer
+      blinkAnimation.stop();
+      clearTimeout(timer);
     };
-  }, [navigation, spinValue]);
-
-  const spin = spinValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
+  }, [navigation, blinkOpacity]);
 
   return (
     <LinearGradient
@@ -54,7 +55,7 @@ const CaseLoadingScreen = () => {
           style={{
             width: 150,
             height: 150,
-            transform: [{rotate: spin}],
+            opacity: blinkOpacity,
             marginBottom: 30,
           }}
           resizeMode="contain"

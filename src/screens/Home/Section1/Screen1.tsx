@@ -188,8 +188,12 @@ export default function HomeScreen() {
                   </LinearGradient>
 
                   <Text
-                    style={{fontFamily: 'SpaceGrotesk-SemiBold'}}
-                    className="text-white pt-4 text-sm">
+                    style={{
+                      fontFamily: 'SpaceGrotesk-SemiBold',
+                      lineHeight: 20,
+                    }}
+                    className="text-white pt-4 text-sm w-[85%]"
+                    numberOfLines={2}>
                     {label}
                   </Text>
                 </TouchableOpacity>

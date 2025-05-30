@@ -1,11 +1,12 @@
 import React from 'react';
 import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {RootTabParamList} from '../../../navigation/types';
 
 const CaseAddedScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootTabParamList>>();
 
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">
@@ -50,8 +51,11 @@ const CaseAddedScreen = () => {
           end={{x: 1, y: 0}}
           className="h-12 w-full justify-center items-center rounded-xl">
           <Pressable
-            onPress={() => navigation.navigate('YourCasesListScreen')}
-            className="w-full h-full justify-center items-center">
+            onPress={() =>
+              navigation.navigate('Home', {screen: 'YourCasesListScreen'})
+            }
+            className="w-full h-full justify-center items-center"
+            android_ripple={{color: '#01B779'}}>
             <Text
               style={{fontFamily: 'SpaceGrotesk-Bold'}}
               className="text-white text-base">

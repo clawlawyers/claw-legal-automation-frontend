@@ -4,26 +4,34 @@ import {View, TouchableOpacity, Text, Image} from 'react-native';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {useNavigationState} from '@react-navigation/native';
 
-// Updated to use local images
-const iconsMap: Record<string, {icon: any; label: string}> = {
+// Two image versions: default (white) and selected (gradient-colored)
+const iconsMap: Record<
+  string,
+  {defaultIcon: any; selectedIcon: any; label: string}
+> = {
   Home: {
-    icon: require('../assets/Firsttab.png'), // Your local image
+    defaultIcon: require('../assets/home-icon.png'),
+    selectedIcon: require('../assets/home-selected.png'),
     label: 'Home',
   },
   YourCases: {
-    icon: require('../assets/Secondtab.png'),
+    defaultIcon: require('../assets/Secondtab.png'),
+    selectedIcon: require('../assets/cases-selected.png'),
     label: 'Your Cases',
   },
   Alerts: {
-    icon: require('../assets/third.png'),
+    defaultIcon: require('../assets/third.png'),
+    selectedIcon: require('../assets/alerts-selected.png'),
     label: 'Alerts',
   },
   Account: {
-    icon: require('../assets/youraccount.png'),
+    defaultIcon: require('../assets/youraccount.png'),
+    selectedIcon: require('../assets/account-selected.png'),
     label: 'Your Account',
   },
   Settings: {
-    icon: require('../assets/settings.png'),
+    defaultIcon: require('../assets/settings.png'),
+    selectedIcon: require('../assets/settings-selected.png'),
     label: 'Settings',
   },
 };
@@ -31,9 +39,8 @@ const iconsMap: Record<string, {icon: any; label: string}> = {
 const HIDDEN_ROUTES = ['Splash'];
 
 const MyTabBar: React.FC<BottomTabBarProps> = ({state, navigation}) => {
-  const currentState = useNavigationState(navState => navState);
-  const currentTabIndex = currentState?.index;
-  const currentRoute = currentState?.routes[currentTabIndex];
+  // Instead of using useNavigationState, we should use the state prop that's already passed in
+  const currentRoute = state.routes[state.index];
 
   const nestedState = currentRoute?.state as any;
   const nestedRouteName =
@@ -50,46 +57,39 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({state, navigation}) => {
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
 
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
-        };
-
-        const {icon, label} = iconsMap[route.name] || {
-          icon: require('../assets/Firsttab.png'), // Fallback image
-          label: route.name,
-        };
+        const iconData = iconsMap[route.name];
+        const iconSource = isFocused
+          ? iconData?.selectedIcon
+          : iconData?.defaultIcon;
 
         return (
           <TouchableOpacity
             key={index}
-            accessibilityRole="button"
-            onPress={onPress}
+            onPress={() => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name);
+              }
+            }}
             className="items-center flex-1 border-0">
-            <View className="items-center mb-0.5justify-center">
+            <View className="items-center justify-center mb-0.5">
               <Image
-                source={icon}
-                style={{
-                  width: 22,
-                  height: 22,
-                  tintColor: isFocused ? '#006261' : '#FFFFFF',
-                }}
+                source={iconSource}
+                style={{width: 22, height: 22}}
                 resizeMode="contain"
               />
             </View>
             <Text
               style={{fontSize: 10, fontFamily: 'SpaceGrotesk-Bold'}}
-              className={` justify-center font-spacegrotesk mt-1 ${
+              className={`mt-1 ${
                 isFocused ? 'text-[#006261] font-semibold' : 'text-white'
               }`}>
-              {label}
+              {iconData?.label || route.name}
             </Text>
           </TouchableOpacity>
         );
@@ -97,5 +97,4 @@ const MyTabBar: React.FC<BottomTabBarProps> = ({state, navigation}) => {
     </View>
   );
 };
-
 export default MyTabBar;

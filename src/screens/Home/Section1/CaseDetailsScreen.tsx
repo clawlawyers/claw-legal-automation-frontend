@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, Text, Pressable, SafeAreaView, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  SafeAreaView,
+  Image,
+  ScrollView,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
@@ -48,14 +55,17 @@ const CaseDetailsScreen = () => {
           <Pressable
             onPress={() => navigation.goBack()}
             className="w-9 h-9 rounded-full bg-[#062C2D] justify-center items-center">
-            <Icon name="arrow-left" size={20} color="#01B679" />
+            <Image
+              source={require('../../../assets/icons/back.png')}
+              className="w-30 h-30"
+              resizeMode="contain"
+            />
           </Pressable>
         </LinearGradient>
       </View>
 
-      {/* Scrollable Content */}
-      <ScrollView className="flex-1 mt-6" showsVerticalScrollIndicator={false}>
-        {/* OUTER Gradient Border Wrapper */}
+      {/* Case Details Box */}
+      <View className="mt-6 pb-4">
         <LinearGradient
           colors={['#016361', '#01B779']}
           start={{x: 0, y: 0}}
@@ -92,31 +102,35 @@ const CaseDetailsScreen = () => {
               </View>
             </LinearGradient>
 
-            {/* Case Fields */}
-            <View className="px-4 py-3 space-y-4">
-              {caseFields.map((item, idx) => (
-                <View
-                  key={idx}
-                  className={idx !== 0 ? 'border-t border-[#01B679] pt-3' : ''}>
-                  <Text
-                    style={{fontFamily: 'SpaceGrotesk-Bold'}}
-                    className="text-base text-[#FFFFFF] pb-1">
-                    {item.label} :
-                  </Text>
-                  <Text
-                    style={{fontFamily: 'SpaceGrotesk'}}
-                    className="text-base text-white pb-2">
-                    {item.value}
-                  </Text>
-                </View>
-              ))}
-            </View>
+            {/* Scrollable Case Fields */}
+            <ScrollView className="max-h-[400px]">
+              <View className="px-4 py-3 space-y-4">
+                {caseFields.map((item, idx) => (
+                  <View
+                    key={idx}
+                    className={
+                      idx !== 0 ? 'border-t border-[#01B679] pt-3' : ''
+                    }>
+                    <Text
+                      style={{fontFamily: 'SpaceGrotesk-Bold'}}
+                      className="text-base text-[#FFFFFF] pb-1">
+                      {item.label} :
+                    </Text>
+                    <Text
+                      style={{fontFamily: 'SpaceGrotesk'}}
+                      className="text-base text-white pb-2">
+                      {item.value}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
           </View>
         </LinearGradient>
-      </ScrollView>
+      </View>
 
-      {/* Bottom Buttons */}
-      <View className="mb-5">
+      {/* Fixed Bottom Buttons */}
+      <View className="absolute bottom-5 left-5 right-5">
         {/* Add To Your Cases */}
         <View className="mb-3 rounded-lg overflow-hidden">
           <LinearGradient
