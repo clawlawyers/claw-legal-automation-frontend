@@ -10,7 +10,7 @@ const RootStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {/* Auth + Intro Screens */}
-      {/* <Stack.Screen name="AuthFlow" component={MainStack} /> */}
+      <Stack.Screen name="AuthFlow" component={MainStack} />
 
       {/* Main App */}
       <Stack.Screen name="MainTabs" component={TabNavigator} />
