@@ -49,7 +49,7 @@ const RegistrationSuccessScreen = () => {
       {/* Bottom Fixed Section */}
       <View className="px-6 pb-8">
         <TouchableOpacity
-          onPress={() => navigation.navigate('OtpVerificationScreen')}
+          onPress={() => navigation.navigate('HomeScreen')}
           style={{
             width: '100%',
             borderRadius: 8,
