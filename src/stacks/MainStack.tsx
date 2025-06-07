@@ -10,6 +10,7 @@ import OtpSuccessScreen from '../screens/OtpSuccessScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import LoginScreen from '../screens/LoginScreen';
+import PostAuthLoadingScreen from '../screens/PostAuthLoadingScreen';
 
 export type MainStackParamList = {
   Splash: undefined;
@@ -20,6 +21,7 @@ export type MainStackParamList = {
   OtpVerificationScreen: undefined;
   ResetPasswordScreen: undefined;
   LoginScreen: undefined;
+  PostAuthLoadingScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
@@ -46,7 +48,9 @@ const MainStack: React.FC = () => {
       <Stack.Screen
         name="ResetPasswordScreen"
         component={ResetPasswordScreen}
+
       />
+      <Stack.Screen name="PostAuthLoadingScreen" component={PostAuthLoadingScreen}/>
     </Stack.Navigator>
     // </NavigationContainer>
   );

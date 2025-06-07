@@ -52,7 +52,7 @@ const CaseAddedScreen = () => {
           className="h-12 w-full justify-center items-center rounded-xl">
           <Pressable
             onPress={() =>
-              navigation.navigate('Home', {screen: 'YourCasesListScreen'})
+              navigation.navigate('Home', {screen: 'CaseListScreen'})
             }
             className="w-full h-full justify-center items-center"
             android_ripple={{color: '#01B779'}}>

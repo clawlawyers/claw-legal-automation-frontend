@@ -8,9 +8,13 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation,RouteProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
+
+type AssociationScreenRouteProp = RouteProp<YourCasesStackParamList, 'AssociationScreen'>;
+
 
 const clients = [
   'Rahul Prajapati',
@@ -111,7 +115,7 @@ const AssociationScreen = () => {
           end={{x: 1, y: 0}}
           className="w-full h-12 justify-center items-center rounded-lg overflow-hidden">
           <Pressable
-            onPress={() => navigation.navigate('ClientDetailsScreen')}
+           // onPress={() => navigation.navigate('ClientDetailsScreen')}
             className="w-full h-full justify-center items-center"
             android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
             <Text

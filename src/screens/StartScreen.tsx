@@ -4,6 +4,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon1 from 'react-native-vector-icons/Feather';
 // import {useNavigation} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {MainStackParamList} from '../stacks/MainStack';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -37,8 +39,14 @@ const onboardingData = [
     image: require('../assets/four.png'),
   },
 ];
+
+type StartScreenNavigationProp = NativeStackNavigationProp<
+  MainStackParamList,
+  'StartScreen' 
+>;
+
 const StartScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StartScreenNavigationProp>(); 
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const insets = useSafeAreaInsets();
@@ -58,7 +66,8 @@ const StartScreen = () => {
   };
 
   const handleSkip = () => {
-    setCurrentIndex(onboardingData.length - 1);
+    // setCurrentIndex(onboardingData.length - 1);
+    navigation.navigate('LoginScreen');
   };
 
   const item = onboardingData[currentIndex];

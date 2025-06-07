@@ -12,9 +12,30 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+// Corrected: Assuming LoginScreen is part of AuthFlow (MainStack) which is within RootStack
+// and needs to navigate to another screen within AuthFlow (MainStack).
+import { MainStackParamList } from '../stacks/MainStack'; // Import MainStackParamList
+
+// Define the navigation prop type for LoginScreen, targeting MainStack for its internal navigation
+type LoginScreenNavigationProp = NativeStackNavigationProp<
+  MainStackParamList, // The stack LoginScreen belongs to
+  'LoginScreen'        // The current screen's name in that stack
+>;
+
 
 const LoginScreen = () => {
-  const navigation = useNavigation<any>();
+  // const navigation = useNavigation<LoginScreenNavigationProp>(); // Previous typing for RootStack
+  const navigation = useNavigation<LoginScreenNavigationProp>(); // Corrected typing for MainStack
+
+ const handleLogin = () => {
+    // Navigate to the PostAuthLoadingScreen after successful login
+    navigation.replace('PostAuthLoadingScreen');
+  };
+
+  const handleForgotPassword = () => {
+    navigation.navigate('OtpVerificationScreen'); // Navigate to OtpVerificationScreen
+  };
 
   return (
     <KeyboardAvoidingView
@@ -77,7 +98,10 @@ const LoginScreen = () => {
             </View>
           </LinearGradient>
 
-          <TouchableOpacity className="self-end mt-2 mb-6">
+          <TouchableOpacity
+            className="self-end mt-2 mb-6"
+            onPress={handleForgotPassword} // MODIFIED: Added onPress handler
+          >
             <Text className="text-[#ACACAC] text-sm">Forgot Password?</Text>
           </TouchableOpacity>
         </View>
@@ -86,7 +110,7 @@ const LoginScreen = () => {
       {/* Fixed Bottom Section */}
       <View className="px-6 pb-8">
         <TouchableOpacity
-          onPress={() => navigation.navigate('RegisterScreen')}
+          onPress={handleLogin}
           style={{
             width: '100%',
             borderRadius: 8,
@@ -106,7 +130,13 @@ const LoginScreen = () => {
         </TouchableOpacity>
 
         <Text className="text-gray-400 mt-6 text-center">
-          New Here? <Text className="text-[#01B879]">Create An Account</Text>
+          New Here?{' '}
+          <Text
+            className="text-[#01B879]"
+            onPress={() => navigation.navigate('RegisterScreen')}
+          >
+            Create An Account
+          </Text>
         </Text>
       </View>
     </KeyboardAvoidingView>

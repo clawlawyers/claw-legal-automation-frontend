@@ -70,6 +70,7 @@
 // App.tsx
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 import RootStack from './src/stacks/RootStack';
 
@@ -77,6 +78,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <RootStack />
+      <Toast />
     </NavigationContainer>
   );
 };

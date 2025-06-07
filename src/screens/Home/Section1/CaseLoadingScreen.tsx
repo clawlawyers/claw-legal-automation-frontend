@@ -2,18 +2,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useRef} from 'react';
 import {View, Text, Animated} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import {useNavigation} from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import {HomeStackParamList} from '../../../stacks/HomeStack';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type CaseLoadingNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
+  'CaseLoadScreen'
+>;
+
+// Define a type for the route props to safely access params
+type CaseLoadingScreenRouteProp = RouteProp<
+  {CaseLoadingScreen: {fromScreen?: string}},
   'CaseLoadingScreen'
 >;
 
 const CaseLoadingScreen = () => {
   const navigation = useNavigation<CaseLoadingNavigationProp>();
+  const route = useRoute<CaseLoadingScreenRouteProp>();
   const blinkOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -34,16 +40,25 @@ const CaseLoadingScreen = () => {
     );
     blinkAnimation.start();
 
-    // Navigate after 3 seconds
+    // Check which screen we navigated from
+    const fromScreen = route.params?.fromScreen;
+
+    // Navigate after 3 seconds based on the origin screen
     const timer = setTimeout(() => {
-      navigation.navigate('CaseDetailsScreen');
+      if (fromScreen === 'OtherwaysInputScreen') {
+        // Navigate to CaseListScreen as requested
+        navigation.navigate('CasesListScreen');
+      } else {
+        // Default navigation to CaseDetailsScreen (from CaseInputScreen)
+        navigation.navigate('CaseDetailsScreen');
+      }
     }, 3000);
 
     return () => {
       blinkAnimation.stop();
       clearTimeout(timer);
     };
-  }, [navigation, blinkOpacity]);
+  }, [navigation, blinkOpacity, route.params]);
 
   return (
     <LinearGradient

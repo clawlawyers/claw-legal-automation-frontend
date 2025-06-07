@@ -7,8 +7,9 @@ import YourCasesStack from './YourCasesStack';
 import YourAlertsStack from './YourAlertsStack';
 import YourAccountStack from './YourAccountStack';
 import YourSettingsStack from './YourSettingsStack';
+import { RootTabParamList } from '../navigation/types';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const TabNavigator = () => {
   return (
@@ -16,10 +17,9 @@ const TabNavigator = () => {
       tabBar={props => <MyTabBar {...props} />}
       screenOptions={{headerShown: false}}
       initialRouteName="Home">
-      {/* <Tab.Screen name="MainStack" component={MainStack} /> */}
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="YourCases" component={YourCasesStack} />
-      <Tab.Screen name="Alerts" component={YourAlertsStack} />
+      <Tab.Screen name="Alerts" component={YourAlertsStack} /> 
       <Tab.Screen name="Account" component={YourAccountStack} />
       <Tab.Screen name="Settings" component={YourSettingsStack} />
     </Tab.Navigator>

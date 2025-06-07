@@ -4,22 +4,22 @@ import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
-import {HomeStackParamList} from '../../../stacks/HomeStack';
+import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 
-type ClientUpdateSuccessProp = NavigationProp<
-  HomeStackParamList,
-  'StartCaseSearch'
+type ClientUpdateSuccessNavigationProp = NavigationProp<  YourCasesStackParamList,'ClientUpdateSuccess'
+
 >;
 
 const ClientUpdateSuccess = () => {
-  const navigation = useNavigation<ClientUpdateSuccessProp>();
+  const navigation = useNavigation<ClientUpdateSuccessNavigationProp>();
+
 
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">
       {/* Back Button */}
       <View className="mt-6">
         <Pressable
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('AssociateClientCaseScreen')}
           className="w-10 h-10 justify-center items-center rounded-full border border-[#01B779]">
           <Icon name="arrow-left" size={20} color="#01B779" />
         </Pressable>

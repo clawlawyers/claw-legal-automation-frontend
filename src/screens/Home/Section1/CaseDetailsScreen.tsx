@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 
 const CaseDetailsScreen = () => {
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
 
   const caseFields = [
     {

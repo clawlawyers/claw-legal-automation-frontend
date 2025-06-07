@@ -14,13 +14,17 @@ import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '../../../stacks/HomeStack';
+import { YourCasesStackParamList } from '../../../stacks/YourCasesStack';
+import HomeStackNavigator from '../../../stacks/Home';
 
 type AddClientScreenProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  'AddClientScreen'
+  YourCasesStackParamList,
+  'ClientDetailsScreen'
 >;
 
-const AddClientScreen = () => {
+
+
+const ClientDetailsScreen = () => {
   const navigation = useNavigation<AddClientScreenProp>();
 
   // const AddClientScreen = () => {
@@ -164,7 +168,7 @@ const AddClientScreen = () => {
             overflow: 'hidden',
           }}>
           <Pressable
-            onPress={() => navigation.navigate('ClientUpdateSuccess')}
+            onPress={() => navigation.navigate('ClientUpdateSuccessScreen')}
             style={{
               width: '100%',
               height: '100%',
@@ -187,4 +191,4 @@ const AddClientScreen = () => {
   );
 };
 
-export default AddClientScreen;
+export default ClientDetailsScreen;

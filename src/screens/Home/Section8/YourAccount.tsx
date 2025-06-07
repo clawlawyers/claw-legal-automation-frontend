@@ -16,8 +16,8 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import {AccountStackParamList} from '../../../stacks/YourAccountStack';
 
-const BORDER_RADIUS = 16; // for rounded-xl approx
-const BORDER_WIDTH = 2; // gradient border thickness
+const BORDER_RADIUS = 16; 
+const BORDER_WIDTH = 2; 
 
 type YourAccountScreenProp = NavigationProp<
   AccountStackParamList,
@@ -26,6 +26,19 @@ type YourAccountScreenProp = NavigationProp<
 
 const YourAccountScreen = () => {
   const navigation = useNavigation<YourAccountScreenProp>();
+
+  const accountDetails = [
+    'Adv. Soumya Snigdha Banik',
+    'soumyabanik0@gmail.com',
+    '+91 7384242486',
+    'WB/12589/2019',
+  ];
+
+  const actionButtons = [
+    { label: 'Edit Details', onPress: () => navigation.navigate('ContactAdminScreen') },
+    { label: 'Add New Advocate', onPress: () => { /* Navigation logic for Add New Advocate */ } },
+    { label: 'Log Out', onPress: () => { /* Logout logic */ } },
+  ];
 
   return (
     <SafeAreaView
@@ -48,13 +61,15 @@ const YourAccountScreen = () => {
           <Text className="text-white font-spacegrotesk text-xs">Viewing</Text>
           <Text
             style={{fontFamily: 'SpaceGrotesk-Bold'}}
-            className="text-white">
+            className="text-white text-base"> 
             Your Account
           </Text>
         </View>
       </View>
 
-      <ScrollView className="pb-36">
+      {/* Scrollable Content Area */}
+     
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 96 }}>
         {/* Details Card with proper rounded gradient border */}
         <LinearGradient
           colors={['#016361', '#01B779']}
@@ -64,45 +79,42 @@ const YourAccountScreen = () => {
             borderRadius: BORDER_RADIUS,
             padding: BORDER_WIDTH,
             marginBottom: 24,
-            overflow: 'hidden', // clip rounded corners on Android
+            overflow: 'hidden',
           }}>
           <View
             style={{
               backgroundColor: '#0D2C32',
-              borderRadius: BORDER_RADIUS,
+              borderRadius: BORDER_RADIUS - BORDER_WIDTH, 
               padding: 16,
             }}>
-            {[
-              'Adv. Soumya Snigdha Banik',
-              'soumyabanik0@gmail.com',
-              '+91 7384242486',
-              'WB/12589/2019',
-            ].map((value, index) => (
+            {accountDetails.map((value, index) => (
               <LinearGradient
                 key={index}
                 colors={['#016361', '#01B779']}
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
-                className={`${index !== 3 ? 'mb-3' : ''}`}
+                className={`${index !== accountDetails.length - 1 ? 'mb-3' : ''}`}
                 style={{
-                  borderRadius: 8,
-                  padding: 1,
+                  borderRadius: 8, 
+                  padding: 1, 
                 }}>
                 <View
                   style={{
                     backgroundColor: '#0D2C32',
-                    borderRadius: 8,
+                    borderRadius: 7, 
                     paddingHorizontal: 12,
-                    // paddingVertical: 4,
+                    height: 48, 
+                    justifyContent: 'center', 
                   }}>
                   <TextInput
                     editable={false}
                     value={value}
                     style={{
                       color: 'white',
-                      fontFamily: 'spacegrotesk',
-                      borderRadius: 8,
+                      fontFamily: 'SpaceGrotesk-Regular', 
+                      fontSize: 14, 
                     }}
+                    placeholderTextColor="#A0A0A0" 
                   />
                 </View>
               </LinearGradient>
@@ -111,26 +123,20 @@ const YourAccountScreen = () => {
         </LinearGradient>
 
         {/* Buttons */}
-        {['Edit Details', 'Add New Advocate', 'Log Out'].map((label, idx) => (
+        {actionButtons.map(({label, onPress}, idx) => (
           <LinearGradient
             key={idx}
             colors={['#016361', '#01B779']}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
-            className="rounded-lg mb-4 overflow-hidden">
+            className="rounded-lg mb-4 overflow-hidden h-12 justify-center items-center">
             <Pressable
-              className="py-3 items-center"
-              onPress={() => {
-                if (label === 'Edit Details') {
-                  navigation.navigate('ContactAdminScreen');
-                } else if (label === 'Log Out') {
-                  // logout logic
-                } else if (label === 'Add New Advocate') {
-                  // navigation logic
-                }
-              }}>
+              className="w-full h-full py-3 items-center justify-center" 
+              onPress={onPress}
+              android_ripple={{ color: 'rgba(255,255,255,0.2)' }}
+              >
               <Text
-                className="text-white"
+                className="text-white text-base" 
                 style={{fontFamily: 'SpaceGrotesk-Bold'}}>
                 {label}
               </Text>
@@ -140,8 +146,8 @@ const YourAccountScreen = () => {
       </ScrollView>
 
       {/* Fixed Bottom Footer */}
-      <View className="absolute bottom-0 left-0 right-0 border-t border-white mx-4 bg-[#0D2C32] py-3">
-        <Text className="text-center text-white text-xs">
+      <View className="absolute bottom-0 left-0 right-0 border-t border-white/20 mx-5 bg-[#0D2C32] py-3">
+        <Text className="text-center text-white text-xs font-spacegrotesk">
           Version: Beta{'\n'}
           Designed & Developed By{' '}
           <Text className="font-semibold">Claw LegalTech</Text>

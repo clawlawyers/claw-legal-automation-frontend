@@ -34,6 +34,7 @@ const HIDDEN_ROUTES = [
   'AddInventoryScreen',
   'InventoryProductList',
   'InventoryProductDetails',
+  
 ];
 
 const CustomTabBar: React.FC<BottomTabBarProps> = ({

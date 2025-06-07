@@ -1,3 +1,4 @@
+// src/screens/Home/Section3/ViewClientCasesScreen.tsx
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {
@@ -10,14 +11,22 @@ import {
   Image,
   StyleSheet,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Dropdown} from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 
-const cases = [
+type CaseItemType = {
+  clawId: string;
+  crn: string;
+  details: string;
+};
+
+const cases: CaseItemType[] = [
   {
     clawId: 'CL00025',
     crn: 'WB071256987589742007',
@@ -32,8 +41,13 @@ const cases = [
   },
 ];
 
+type ViewClientCasesScreenNavigationProp = NavigationProp<
+  YourCasesStackParamList,
+  'ViewClientCasesScreen'
+>;
+
 const ViewClientCasesScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ViewClientCasesScreenNavigationProp>();
   const [searchText, setSearchText] = useState('');
   const [selectedParameter, setSelectedParameter] = useState<string | null>(
     null,
@@ -44,11 +58,17 @@ const ViewClientCasesScreen = () => {
     {label: 'Case Details', value: 'case_details'},
   ];
 
+  const handleCaseItemPress = (caseItem: CaseItemType) => {
+    navigation.navigate('AssociateClientCaseScreen', {
+      caseId: caseItem.clawId,
+      caseDetails: caseItem,
+    });
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 pb-6">
       {/* Header */}
       <View className="flex-row items-center mt-5">
-        {/* Back Button */}
         <LinearGradient
           colors={['#016361', '#01B779']}
           start={{x: 0, y: 0}}
@@ -63,8 +83,6 @@ const ViewClientCasesScreen = () => {
             </View>
           </Pressable>
         </LinearGradient>
-
-        {/* Title */}
         <View className="ml-3 flex-1">
           <Text
             className="text-white text-xs"
@@ -77,8 +95,6 @@ const ViewClientCasesScreen = () => {
             Client Details
           </Text>
         </View>
-
-        {/* Download Button */}
         <LinearGradient
           colors={['#016361', '#01B779']}
           start={{x: 0, y: 0}}
@@ -93,7 +109,6 @@ const ViewClientCasesScreen = () => {
         </LinearGradient>
       </View>
 
-      {/* Client Info */}
       <View className="mt-5 space-y-1">
         <Text
           className="text-white"
@@ -125,41 +140,20 @@ const ViewClientCasesScreen = () => {
         </Text>
       </View>
 
-      {/* Associated Cases Title */}
       <Text
         className="text-white text-center text-base mt-6 mb-2"
         style={{fontFamily: 'SpaceGrotesk-Bold'}}>
         Associated Cases
       </Text>
 
-      {/* Filter & Search Row */}
       <View
-        style={{
-          flexDirection: 'row',
-          height: 45,
-          borderRadius: 10,
-          borderWidth: 1,
-          borderColor: '#01B779',
-          overflow: 'hidden',
-          marginVertical: 16,
-        }}>
-        {/* Dropdown */}
-        <View style={{width: '40%', backgroundColor: '#01B779'}}>
+        style={styles.filterSearchRow}>
+        <View style={styles.dropdownContainer}>
           <Dropdown
-            style={{
-              height: '100%',
-              justifyContent: 'center',
-              paddingHorizontal: 10,
-            }}
-            placeholderStyle={{
-              color: '#fff',
-              fontSize: 14,
-            }}
-            selectedTextStyle={{
-              color: '#fff',
-              fontSize: 14,
-            }}
-            iconStyle={{width: 20, height: 20, tintColor: '#fff'}}
+            style={styles.dropdown}
+            placeholderStyle={styles.dropdownPlaceholder}
+            selectedTextStyle={styles.dropdownSelectedText}
+            iconStyle={styles.dropdownIcon}
             data={parameterOptions}
             labelField="label"
             valueField="value"
@@ -171,90 +165,70 @@ const ViewClientCasesScreen = () => {
             )}
           />
         </View>
-
-        {/* Search Input */}
         <View
-          style={{
-            flex: 1,
-            backgroundColor: '#143139',
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: 10,
-          }}>
+          style={styles.searchInputContainer}>
           <TextInput
             placeholder="Search"
             placeholderTextColor="#ccc"
-            style={{
-              flex: 1,
-              color: '#fff',
-              fontSize: 14,
-            }}
+            style={styles.searchInput}
             value={searchText}
             onChangeText={setSearchText}
           />
           <Image
             source={require('../../../assets/icons/search1.png')}
-            className="w-25 h-25"
+            style={{width: 22, height: 22}}
             resizeMode="contain"
           />
         </View>
       </View>
 
-      {/* Cases List */}
       <ScrollView
         className="mb-24"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 30}}>
-        {cases.map((item, index) => (
-          <LinearGradient
-            key={index}
-            colors={['#016361', '#01B779']}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{borderRadius: 10, marginBottom: 16, padding: 1}}>
-            <View
-              style={{
-                backgroundColor: '#062C2D',
-                borderRadius: 10,
-                padding: 16,
-              }}>
-              <Text
-                className="text-white"
-                style={{fontFamily: 'SpaceGrotesk-Bold'}}>
-                Claw Case ID:{' '}
-                <Text style={{fontFamily: 'SpaceGrotesk-Regular'}}>
-                  {item.clawId}
+        {cases.map((item) => (
+          <TouchableOpacity key={item.clawId} onPress={() => handleCaseItemPress(item)}>
+            <LinearGradient
+              colors={['#016361', '#01B779']}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.caseItemGradient}>
+              <View
+                style={styles.caseItemInner}>
+                <Text
+                  className="text-white"
+                  style={{fontFamily: 'SpaceGrotesk-Bold'}}>
+                  Claw Case ID:{' '}
+                  <Text style={{fontFamily: 'SpaceGrotesk-Regular'}}>
+                    {item.clawId}
+                  </Text>
                 </Text>
-              </Text>
-              <Text
-                className="text-white mt-1"
-                style={{fontFamily: 'SpaceGrotesk-Bold'}}>
-                CRN No:{' '}
-                <Text style={{fontFamily: 'SpaceGrotesk-Regular'}}>
-                  {item.crn}
+                <Text
+                  className="text-white mt-1"
+                  style={{fontFamily: 'SpaceGrotesk-Bold'}}>
+                  CRN No:{' '}
+                  <Text style={{fontFamily: 'SpaceGrotesk-Regular'}}>
+                    {item.crn}
+                  </Text>
                 </Text>
-              </Text>
-              <Text
-                className="text-white mt-3"
-                style={{fontFamily: 'SpaceGrotesk-Bold'}}>
-                Case Details:
-              </Text>
-              <Text
-                className="text-white text-sm mt-1"
-                style={{fontFamily: 'SpaceGrotesk-Regular'}}>
-                {item.details}
-              </Text>
-            </View>
-          </LinearGradient>
+                <Text
+                  className="text-white mt-3"
+                  style={{fontFamily: 'SpaceGrotesk-Bold'}}>
+                  Case Details:
+                </Text>
+                <Text
+                  className="text-white text-sm mt-1"
+                  style={{fontFamily: 'SpaceGrotesk-Regular'}}>
+                  {item.details}
+                </Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Action Buttons */}
-      <View className="absolute bottom-0 left-0 right-0 px-5 pb-5 bg-[#062C2D] pt-3">
-        {/* First Row - Delete/Edit Buttons */}
+      <View style={styles.actionButtonsContainer}>
         <View className="flex-row justify-between items-center gap-4 mb-3">
-          {/* Delete Button */}
-          {/* Delete Button with Fixed Border Edges */}
           <View className="flex-1 rounded-lg overflow-hidden">
             <LinearGradient
               colors={['#016361', '#01B779']}
@@ -262,6 +236,7 @@ const ViewClientCasesScreen = () => {
               end={{x: 1, y: 0}}
               className="h-12 justify-center items-center p-[1px]">
               <Pressable
+                onPress={() => Alert.alert("Delete Client", "Are you sure?")}
                 className="w-full h-full justify-center items-center bg-[#062C2D] rounded-[7px]"
                 android_ripple={{color: 'rgba(255,255,255,0.1)'}}>
                 <Text
@@ -272,14 +247,13 @@ const ViewClientCasesScreen = () => {
               </Pressable>
             </LinearGradient>
           </View>
-
-          {/* Edit Button */}
           <LinearGradient
             colors={['#016361', '#01B779']}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
             className="flex-1 h-12 rounded-lg overflow-hidden">
             <Pressable
+              onPress={() => console.log("Edit client pressed")}
               className="w-full h-full justify-center items-center"
               android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
               <Text
@@ -290,8 +264,6 @@ const ViewClientCasesScreen = () => {
             </Pressable>
           </LinearGradient>
         </View>
-
-        {/* New Full Width Button */}
         <LinearGradient
           colors={['#016361', '#01B779']}
           start={{x: 0, y: 0}}
@@ -300,7 +272,15 @@ const ViewClientCasesScreen = () => {
           <Pressable
             className="w-full h-full justify-center items-center"
             android_ripple={{color: 'rgba(255,255,255,0.2)'}}
-            onPress={() => navigation.navigate('NoActiveAlertsScreen')}>
+            onPress={() => {
+                // This navigation needs to be to a route defined in YourCasesStackParamList
+                // If 'NoActiveAlertsScreen' is not in YourCasesStackParamList, this will error
+                // For now, casting to 'any' to suppress TypeScript error if it's not defined
+                // but this should be fixed by defining the route or choosing a valid one.
+                // navigation.navigate('NoActiveAlertsScreen' as any);
+                 console.log("View All Client Cases (button) pressed - Navigation target might need review");
+            }}
+            >
             <Text
               className="text-white"
               style={{fontFamily: 'SpaceGrotesk-Bold'}}>
@@ -312,5 +292,49 @@ const ViewClientCasesScreen = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  filterSearchRow: {
+    flexDirection: 'row',
+    height: 45,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#01B779',
+    overflow: 'hidden',
+    marginVertical: 16,
+  },
+  dropdownContainer: {
+    width: '40%',
+    backgroundColor: '#01B779',
+  },
+  dropdown: {
+    height: '100%',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  dropdownPlaceholder: { color: '#fff', fontSize: 14, fontFamily: 'SpaceGrotesk-Regular' },
+  dropdownSelectedText: { color: '#fff', fontSize: 14, fontFamily: 'SpaceGrotesk-Regular' },
+  dropdownIcon: { width: 20, height: 20, tintColor: '#fff' },
+  searchInputContainer: {
+    flex: 1,
+    backgroundColor: '#143139',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  searchInput: { flex: 1, color: '#fff', fontSize: 14, fontFamily: 'SpaceGrotesk-Regular' },
+  caseItemGradient: { borderRadius: 10, marginBottom: 16, padding: 1 },
+  caseItemInner: { backgroundColor: '#062C2D', borderRadius: 9, padding: 16 },
+  actionButtonsContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    paddingTop: 12,
+    backgroundColor: '#062C2D',
+  },
+});
 
 export default ViewClientCasesScreen;

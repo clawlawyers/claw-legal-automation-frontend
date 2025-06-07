@@ -36,7 +36,54 @@ const iconsMap: Record<
   },
 };
 
-const HIDDEN_ROUTES = ['Splash'];
+const HIDDEN_ROUTES = ['Splash',
+  'StartCaseSearch',
+  'CaseLoadingScreen',
+  'CaseDetailsScreen',
+  'CaseAddedScreen',
+  'CaseNotFound',
+  'SelectCourtScreen',
+  'LegalGptScreen',
+  'AddClientScreen',
+  'ClientUpdateScreen',
+  'CaseDeetailsDownload',
+  'YourCasesListScreen',
+  'CreateNewCase',
+  'AutomatedAlertsActive',
+  'AssociatedSetReminder',
+
+  'NoActiveAlerts',
+  'GetReminder',
+  'StartAutomatedAlerts',
+  'SendCaseDetails',
+  'ProceedingDetailsSent',
+  'FetchingCase',
+  'ClientDetailsScreen',
+  'CauseFetchSuccess',
+  'FetchSelected',
+  'GetCauseListScreen',
+  'RetrieveOrder',
+  'FetchingJudgements',
+  'GetLegalJudgements',
+  'JudgementsFetched',
+  'Contactadmin',
+  'YourAccount',
+  'ViewClientCasesScreen',
+  'AddNewClientScreen',
+  'HighCourtCaseSelectionScreen',
+  'DistrictCourtCaseSelectionScreen',
+  'CaseInputScreen',
+  'OtherwaysInputScreen',
+  'FetchingCaseScreen',
+  'AssociateClientCaseScreen',
+  'CaseDetailsDownloadScreen',
+  'CaseDetailsScreen',
+  'CaseAddedScreen',
+  'ClientUpdateSuccessScreen',
+  
+
+
+];
 
 const MyTabBar: React.FC<BottomTabBarProps> = ({state, navigation}) => {
   // Instead of using useNavigationState, we should use the state prop that's already passed in

@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "org.jetbrains.kotlin.android" // Assuming you use Kotlin, otherwise this might not be needed
 apply plugin: "com.facebook.react"
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
@@ -59,7 +59,7 @@ react {
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = false
+// def enableProguardInReleaseBuilds = false // This variable is no longer needed for this setup
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -72,23 +72,38 @@ def enableProguardInReleaseBuilds = false
  * give correct results when using with locales other than en-US. Note that
  * this variant is about 6MiB larger per architecture than default.
  */
-def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+' // Make sure this version is compatible with your RN version
+
+// The 'hermesEnabled' variable might be defined in your root project's build.gradle or gradle.properties
+// If it's not, you might need to define it or remove the 'if (hermesEnabled.toBoolean())' check
+// For simplicity, assuming it's defined elsewhere, or you are using Hermes by default.
+// If you get errors about hermesEnabled, you might need to set:
+// project.ext.set("hermesEnabled", true) // or false, in your android/build.gradle (root project)
 
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.awesomeproject"
+    namespace "com.awesomeproject" // Replace with your actual package name
     defaultConfig {
-        applicationId "com.awesomeproject"
+        applicationId "com.awesomeproject" // Replace with your actual package name
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        // multiDexEnabled true // Consider adding this if you hit a 65K method limit, though R8 often handles this.
     }
     signingConfigs {
-        debug {
+         release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+        debug { // It's good practice to define a debug signingConfig too, even if it's the default
             storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
@@ -98,24 +113,40 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            // For debug builds, minification is usually off by default, which is fine.
+            // minifyEnabled false
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+            minifyEnabled true      // Code shrinking and obfuscation ON
+            shrinkResources true    // Remove unused resources ON
+            // THE FOLLOWING LINE THAT USED 'enableProguardInReleaseBuilds' HAS BEEN REMOVED
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' // Use -optimize for better results
         }
     }
+    // packagingOptions { // Add this if you encounter issues with duplicate files from libraries
+    //     pickFirst 'lib/x86/libc++_shared.so'
+    //     pickFirst 'lib/x86_64/libc++_shared.so'
+    //     pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    //     pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    // }
 }
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
-    if (hermesEnabled.toBoolean()) {
+    // Check if hermesEnabled is true before trying to implement hermes-android
+    // This variable is usually set in your project's root android/build.gradle or gradle.properties
+    def hermesEnabled = project.getProperties().get("hermesEnabled", "false").toBoolean()
+    if (hermesEnabled) {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
     }
+
+
+    // Add other dependencies here
+    // implementation 'androidx.appcompat:appcompat:1.3.1' // Example
+    // implementation 'com.google.android.material:material:1.4.0' // Example
 }

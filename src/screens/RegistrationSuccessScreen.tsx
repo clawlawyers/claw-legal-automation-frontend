@@ -10,10 +10,20 @@ import {
   Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import LinearGradient from 'react-native-linear-gradient';
+import { MainStackParamList } from '../stacks/MainStack';
+type RegSuccessScreenNavigationProp = NativeStackNavigationProp<MainStackParamList,'RegistrationSuccessScreen'>;
 
 const RegistrationSuccessScreen = () => {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<RegSuccessScreenNavigationProp>();
+
+  const handleKnowMoreOrContinue = () => {
+    // Instead of OtpVerificationScreen, navigate to PostAuthLoadingScreen
+    // Or, if OTP is mandatory after registration before true login, this flow might differ.
+    // Assuming successful registration directly leads to the app:
+    navigation.replace('PostAuthLoadingScreen'); // MODIFIED
+  };
 
   return (
     <KeyboardAvoidingView

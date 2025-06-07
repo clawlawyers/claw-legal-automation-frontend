@@ -1,9 +1,9 @@
+// src/stacks/YourAlertsStack.tsx
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import NoActiveAlertsScreen from '../screens/Home/Section4/NoActiveAlerts';
 import CreateNewCaseScreen from '../screens/Home/Section4/CreateNewCase';
-
 import StartAutomatedAlertsScreen from '../screens/Home/Section4/StartAutomatedAlerts';
 import AssociatedSetReminderScreen from '../screens/Home/Section4/AssociatedSetReminder';
 import SetReminderScreen from '../screens/Home/Section4/SetReminder';
@@ -39,7 +39,7 @@ const Stack = createNativeStackNavigator<YourAlertsStackParamList>();
 const YourAlertsStack = () => {
   return (
     <Stack.Navigator
-      initialRouteName="GetLegalJudgements"
+      initialRouteName="NoActiveAlertsScreen" // MODIFIED: Changed initial route
       screenOptions={{headerShown: false}}>
       <Stack.Screen
         name="NoActiveAlertsScreen"

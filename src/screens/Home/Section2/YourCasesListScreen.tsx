@@ -1,3 +1,4 @@
+// src/screens/Home/Section2/YourCasesListScreen.tsx
 /* eslint-disable react-native/no-inline-styles */
 import {RootTabParamList} from '../../../navigation/types';
 import React, {useState} from 'react';
@@ -10,15 +11,31 @@ import {
   SafeAreaView,
   Platform,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Dropdown} from 'react-native-element-dropdown';
 import LinearGradient from 'react-native-linear-gradient';
+import {YourCasesStackParamList, CaseDetailsType} from '../../../stacks/YourCasesStack';
+import { HomeStackParamList } from '../../../stacks/Home';
+import { YourAlertsStackParamList } from '../../../stacks/YourAlertsStack';
+
+type CaseListItemType = {
+  id: string;
+  claw_case_id: string;
+  crn_no: string;
+  case_details: string;
+};
+
+type YourCasesListScreenNavigationProp = NavigationProp<
+YourCasesStackParamList,
+ 'YourCasesListScreen'
+ >;
 
 const YourCasesListScreen = () => {
-  const navigation = useNavigation<NavigationProp<RootTabParamList>>();
+  const navigation = useNavigation<YourCasesListScreenNavigationProp>();
 
   const [selectedParameter, setSelectedParameter] = useState<string | null>(
     null,
@@ -31,7 +48,7 @@ const YourCasesListScreen = () => {
     {label: 'Case Details', value: 'case_details'},
   ];
 
-  const cases = [
+  const casesData: CaseListItemType[] = [
     {
       id: '29',
       claw_case_id: 'CL00023',
@@ -69,14 +86,36 @@ const YourCasesListScreen = () => {
     },
   ];
 
-  const filteredCases = cases.filter(item => {
+  const filteredCases = casesData.filter(item => {
     if (!selectedParameter || !searchText.trim()) return true;
-    const key = selectedParameter as keyof typeof item;
-    return (
-      item[key]?.toLowerCase().includes(searchText.trim().toLowerCase()) ??
-      false
-    );
+    const key = selectedParameter as keyof CaseListItemType;
+    if (item.hasOwnProperty(key) && typeof item[key] === 'string') {
+        return (item[key] as string).toLowerCase().includes(searchText.trim().toLowerCase());
+    }
+    return false;
   });
+
+  const handleCaseItemPress = (item: CaseListItemType) => {
+    console.log('Navigating to associate client for case:', item.claw_case_id);
+    const caseDetailsToPass: CaseDetailsType = {
+        id: item.id,
+        clawId: item.claw_case_id,
+        crn: item.crn_no,
+        details: item.case_details,
+        
+    };
+
+    navigation.navigate('AssociateClientCaseScreen', {
+      caseId: item.claw_case_id,
+      caseDetails: caseDetailsToPass,
+    });
+  };
+
+  const handleAddCasesPress = () => {
+    navigation.navigate('SelectCourtScreen');
+    console.log("Add Cases pressed, navigating to SelectCourtScreen");
+  };
+
 
   return (
     <SafeAreaView
@@ -84,7 +123,6 @@ const YourCasesListScreen = () => {
       style={{
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       }}>
-      {/* Header */}
       <View className=" flex-row items-center">
         <Pressable
           onPress={() => navigation.goBack()}
@@ -101,33 +139,13 @@ const YourCasesListScreen = () => {
         </View>
       </View>
 
-      {/* Dropdown + Search */}
       <View className="flex-row items-center mt-6 mb-3">
-        {/* Dropdown */}
         <View className="w-[40%] bg-[#01B779] rounded-l-lg px-2">
           <Dropdown
             style={{height: 40}}
-            containerStyle={{
-              borderRadius: 0,
-              borderTopLeftRadius: 8,
-              borderBottomLeftRadius: 8,
-            }}
-            inputSearchStyle={{
-              backgroundColor: 'red', // dark background for search input
-              color: '#fff', // white text
-              borderRadius: 4,
-              paddingHorizontal: 10,
-            }}
-            placeholderStyle={{
-              color: '#fff',
-              fontSize: 14,
-              textAlign: 'center',
-            }}
-            selectedTextStyle={{
-              color: '#fff',
-              fontSize: 14,
-              textAlign: 'center',
-            }}
+            containerStyle={{ borderRadius: 0, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
+            placeholderStyle={{ color: '#fff', fontSize: 14, textAlign: 'center', fontFamily: 'SpaceGrotesk-Regular' }}
+            selectedTextStyle={{ color: '#fff', fontSize: 14, textAlign: 'center', fontFamily: 'SpaceGrotesk-Regular' }}
             iconStyle={{width: 20, height: 20, tintColor: '#fff'}}
             data={parameterOptions}
             labelField="label"
@@ -140,13 +158,12 @@ const YourCasesListScreen = () => {
             )}
           />
         </View>
-
-        {/* Search */}
         <View className="flex-1 bg-[#143139] rounded-r-md px-3 flex-row border border-[#016361] items-center h-[40px]">
           <TextInput
             placeholder="Search"
             placeholderTextColor="#888"
-            className="flex-1 text-black"
+            className="flex-1 text-white font-spacegrotesk-regular"
+            style={{fontSize: 14}}
             value={searchText}
             onChangeText={setSearchText}
           />
@@ -154,34 +171,29 @@ const YourCasesListScreen = () => {
         </View>
       </View>
 
-      {/* Case List */}
       <ScrollView className="flex-1 mt-1">
-        {filteredCases.map((item, index) => (
-          <View
-            key={item.id}
-            className={`p-4 rounded-xl border ${
-              index === 0
-                ? 'border-[#016361] bg-[#062C2D]'
-                : 'border-[#016361] bg-[#062C2D]'
-            } mb-4`}>
-            <Text className="text-white font-bold text-sm">
-              Claw Case ID :{' '}
-              <Text className="text-white">{item.claw_case_id}</Text>
-            </Text>
-            <Text className="text-white font-bold text-sm mt-1">
-              CRN No : <Text className="text-white">{item.crn_no}</Text>
-            </Text>
-            <Text className="text-white font-bold text-sm mt-1">
-              Case Details :
-            </Text>
-            <Text className="text-white text-sm mt-0.5">
-              {item.case_details}
-            </Text>
-          </View>
+        {filteredCases.map((item) => (
+          <TouchableOpacity key={item.id} onPress={() => handleCaseItemPress(item)}>
+            <View
+              className={`p-4 rounded-xl border border-[#016361] bg-[#062C2D] mb-4`}>
+              <Text className="text-white font-bold text-sm font-spacegrotesk">
+                Claw Case ID:{' '}
+                <Text className="text-white font-normal font-spacegrotesk">{item.claw_case_id}</Text>
+              </Text>
+              <Text className="text-white font-bold text-sm mt-1 font-spacegrotesk">
+                CRN No : <Text className="text-white font-normal font-spacegrotesk">{item.crn_no}</Text>
+              </Text>
+              <Text className="text-white font-bold text-sm mt-1 font-spacegrotesk">
+                Case Details :
+              </Text>
+              <Text className="text-white text-sm mt-0.5 font-spacegrotesk">
+                {item.case_details}
+              </Text>
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Footer */}
       <View className="mb-3 rounded-lg overflow-hidden">
         <LinearGradient
           colors={['#016361', '#01B779']}
@@ -189,15 +201,13 @@ const YourCasesListScreen = () => {
           end={{x: 1, y: 0}}
           className="w-full h-12 justify-center items-center">
           <Pressable
-            onPress={() =>
-              navigation.navigate('Home', {screen: 'StartCaseSearch'})
-            }
+            onPress={handleAddCasesPress}
             className="w-full h-full justify-center items-center"
             android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
             <Text
               style={{fontFamily: 'SpaceGrotesk-Bold'}}
               className="text-white font-semibold">
-              Add Cases
+              Add Cases 
             </Text>
           </Pressable>
         </LinearGradient>

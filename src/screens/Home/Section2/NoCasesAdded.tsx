@@ -1,13 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {View, Text, Pressable, SafeAreaView} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
+
+type NoCasesAddedNavigationProp = NavigationProp<YourCasesStackParamList>;
 
 const NoCasesAdded = () => {
-  const navigation = useNavigation();
-
+const navigation = useNavigation<NoCasesAddedNavigationProp>(); 
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">
       {/* Header */}
@@ -76,8 +78,8 @@ const NoCasesAdded = () => {
             end={{x: 1, y: 0}}
             className="w-full h-12 justify-center items-center">
             <Pressable
-              onPress={() => navigation.navigate('YourCasesListScreen')}
-              className="w-full h-full justify-center items-center"
+                onPress={() => navigation.navigate('SelectCourtScreen')}          
+                className="w-full h-full justify-center items-center"
               android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
               <Text
                 style={{fontFamily: 'SpaceGrotesk-Bold'}}
