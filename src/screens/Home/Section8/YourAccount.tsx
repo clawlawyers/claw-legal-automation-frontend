@@ -36,7 +36,7 @@ const YourAccountScreen = () => {
 
   const actionButtons = [
     { label: 'Edit Details', onPress: () => navigation.navigate('ContactAdminScreen') },
-    { label: 'Add New Advocate', onPress: () => { /* Navigation logic for Add New Advocate */ } },
+    { label: 'View All Firm Advocates', onPress: () => navigation.navigate('FirmAdvocateListScreen') },
     { label: 'Log Out', onPress: () => { /* Logout logic */ } },
   ];
 

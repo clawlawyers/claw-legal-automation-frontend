@@ -1,20 +1,27 @@
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Feather';
-
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
+import {HomeStackParamList} from '../../../stacks/HomeStack'; // Adjust path if needed
 
 type ProceedingDetailsSentScreenProp = NativeStackNavigationProp<
-  YourAlertsStackParamList,
-  'AutomatedAlertsActiveScreen'
+  HomeStackParamList,
+  'ProceedingDetailsSentScreen'
 >;
 
 const ProceedingDetailsSentScreen = () => {
   const navigation = useNavigation<ProceedingDetailsSentScreenProp>();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.goBack();
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [navigation]);
 
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">
@@ -32,17 +39,11 @@ const ProceedingDetailsSentScreen = () => {
       </View>
 
       {/* Center Content */}
-      <View className="flex-1 mt-10 ustify-center items-center">
-        {/* Circle with Icon */}
-        {/* <Image
-          source={require('../../../assets/images/noalerts.png')}
-          className="w-30 h-30 my-10"
-          resizeMode="contain"
-        /> */}
+      <View className="flex-1 -mt-10 justify-center items-center">
         <View className="w-45 h-45 rounded-full justify-center items-center mb-6 mx-auto">
           <Image
             source={require('../../../assets/casesearch.png')}
-            className="w-30 h-30"
+            className="w-40 h-40"
             resizeMode="contain"
           />
         </View>
@@ -60,8 +61,6 @@ const ProceedingDetailsSentScreen = () => {
           selected clients.
         </Text>
       </View>
-
-      {/* View Your Cases Button */}
     </SafeAreaView>
   );
 };

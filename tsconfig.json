@@ -2,5 +2,6 @@
   "extends": "./node_modules/@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
     "jsx": "react-jsx"
+    // Removed 'types': ['jest'] to fix the error. If you need Jest types, run: npm install --save-dev @types/jest
   }
 }

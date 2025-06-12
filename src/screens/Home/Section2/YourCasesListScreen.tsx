@@ -116,6 +116,12 @@ const YourCasesListScreen = () => {
     console.log("Add Cases pressed, navigating to SelectCourtScreen");
   };
 
+  // --- ADDED --- Function handler for the new button
+  const handleViewFirmCases = () => {
+    console.log("View Firm Cases pressed. Implement navigation here.");
+    // Example navigation: navigation.navigate('FirmCasesScreen');
+  };
+
 
   return (
     <SafeAreaView
@@ -123,20 +129,33 @@ const YourCasesListScreen = () => {
       style={{
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       }}>
-      <View className=" flex-row items-center">
-        <Pressable
-          onPress={() => navigation.goBack()}
-          className="w-10 h-10 justify-center items-center rounded-full border border-[#01B779]">
-          <Icon name="arrow-left" size={20} color="#01B779" />
-        </Pressable>
-        <View className="ml-3">
-          <Text className="text-white font-spacegrotesk text-xs">Viewing</Text>
-          <Text
-            style={{fontFamily: 'SpaceGrotesk-Bold'}}
-            className="text-white text-base">
-            Your Cases
-          </Text>
+      {/* --- MODIFIED --- Added justify-between, items-center, and top margin */}
+      <View className="flex-row items-center justify-between mt-4">
+        <View className="flex-row items-center">
+            <Pressable
+            onPress={() => navigation.goBack()}
+            className="w-10 h-10 justify-center items-center rounded-full border border-[#01B779]">
+            <Icon name="arrow-left" size={20} color="#01B779" />
+            </Pressable>
+            <View className="ml-3">
+            <Text className="text-white font-spacegrotesk text-xs">Viewing</Text>
+            <Text
+                style={{fontFamily: 'SpaceGrotesk-Bold'}}
+                className="text-white text-base">
+                Your Cases
+            </Text>
+            </View>
         </View>
+
+        {/* --- ADDED --- New button on the right */}
+        <TouchableOpacity onPress={handleViewFirmCases}>
+            <Text 
+                style={{fontFamily: 'SpaceGrotesk-Bold'}}
+                className="text-[#01B779] text-sm"
+            >
+                View Firm Cases
+            </Text>
+        </TouchableOpacity>
       </View>
 
       <View className="flex-row items-center mt-6 mb-3">

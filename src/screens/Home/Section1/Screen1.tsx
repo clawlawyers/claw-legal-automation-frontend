@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useState } from 'react'; // Import useState
 import {
   View,
   Text,
@@ -8,17 +8,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  Modal, // <-- Import Modal
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation, NavigationProp, RouteProp} from '@react-navigation/native';
 import {HomeStackParamList} from '../../../stacks/HomeStack';
-// Import from react-native-responsive-dimensions
 import {
   responsiveHeight,
   responsiveWidth,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // For the close icon
 
 type HomeScreenNavigationProp = NavigationProp<
   HomeStackParamList,
@@ -31,11 +32,26 @@ interface HomeScreenComponentProps {
   route: HomeScreenRouteProp;
 }
 
-const updates = [
+// Define a type for our update objects for better type safety
+interface Update {
+  title: string;
+  description: string;
+  date: string;
+  head: string;
+}
+
+const updates: Update[] = [
   {
     title: 'Clause 31 (A) Updated',
     description:
-      'Supreme Court have Updated the Clause 31 (A) in order to cater to the ongoing stress between international payments...',
+      'Supreme Court have Updated the Clause 31 (A) in order to cater to the ongoing stress between international payments. This detailed update includes several sub-clauses that address digital transactions, cross-border disputes, and the implementation of new escrow requirements for high-value transfers. The change aims to provide greater transparency and security for all parties involved in international commerce. Lawyers are advised to review the full documentation to understand the impact on their clients\' contractual agreements and financial operations.',
+    date: '20 May',
+    head: 'Recent Legal Updates',
+  },
+  {
+    title: 'Clause 31 (B) Updated',
+    description:
+      'Following the recent changes to Clause 31 (A), the Supreme Court has now issued an update for Clause 31 (B). This clause specifically deals with arbitration procedures for disputes arising from the aforementioned international payments. The update mandates a new timeline for dispute resolution and introduces a panel of pre-approved arbitrators with expertise in financial law. This is a significant change designed to expedite the resolution process and reduce legal costs.',
     date: '20 May',
     head: 'Recent Legal Updates',
   },
@@ -61,7 +77,7 @@ const mainButtonsData = [
   {
     label: 'Start\nLegal GPT',
     icon: require('../../../assets/images/button4.png'),
-     onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate('LegalGptScreen')
+     //onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate('LegalGptScreen')
   },
 ];
 
@@ -89,21 +105,62 @@ export default function HomeScreen({route}: HomeScreenComponentProps) {
   const [isLoadingContent, setIsLoadingContent] = React.useState(false);
   const [initialLoadEffectDone, setInitialLoadEffectDone] = React.useState(false);
 
-    React.useEffect(() => {
-        if (route.params?.fromLogin && !initialLoadEffectDone) {
-            setIsLoadingContent(true);
-            const timer = setTimeout(() => {
-                setIsLoadingContent(false);
-                setInitialLoadEffectDone(true);
-            }, 1500);
+  // --- NEW STATE FOR MODAL ---
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedUpdate, setSelectedUpdate] = useState<Update | null>(null);
 
-            return () => clearTimeout(timer);
-        }
-    }, [route.params, initialLoadEffectDone]);
+  React.useEffect(() => {
+    if (route.params?.fromLogin && !initialLoadEffectDone) {
+        setIsLoadingContent(true);
+        const timer = setTimeout(() => {
+            setIsLoadingContent(false);
+            setInitialLoadEffectDone(true);
+        }, 1500);
 
+        return () => clearTimeout(timer);
+    }
+  }, [route.params, initialLoadEffectDone]);
+
+  // --- FUNCTION TO OPEN THE MODAL ---
+  const openUpdateModal = (update: Update) => {
+    setSelectedUpdate(update);
+    setIsModalVisible(true);
+  };
+
+  // --- FUNCTION TO CLOSE THE MODAL ---
+  const closeUpdateModal = () => {
+    setIsModalVisible(false);
+    setSelectedUpdate(null);
+  };
 
   return (
     <View style={styles.container}>
+      {/* --- UPDATE DETAILS MODAL --- */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={closeUpdateModal} // For Android back button
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalContentContainer}>
+            {selectedUpdate && (
+              <>
+                <TouchableOpacity style={styles.closeButton} onPress={closeUpdateModal}>
+                  <Icon name="close" size={responsiveFontSize(3)} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.modalTitle}>{selectedUpdate.title}</Text>
+                <Text style={styles.modalDate}>{selectedUpdate.date}</Text>
+                <View style={styles.modalDivider} />
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  <Text style={styles.modalDescription}>{selectedUpdate.description}</Text>
+                </ScrollView>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+
       {/* Fixed Header */}
       <View style={styles.headerOuterContainer}>
         <View style={styles.headerContent}>
@@ -128,7 +185,6 @@ export default function HomeScreen({route}: HomeScreenComponentProps) {
               </Text>
             </View>
           </View>
-          {/* Optional: Add refresh icon here if needed */}
         </View>
       </View>
 
@@ -151,33 +207,35 @@ export default function HomeScreen({route}: HomeScreenComponentProps) {
               loop
               width={responsiveWidth(83.72)}
               height={responsiveHeight(17.14)}
-              paddingTop={responsiveHeight(2)} // Prop for Carousel, assuming it takes a number
+              paddingTop={responsiveHeight(2)}
               autoPlay
               autoPlayInterval={3000}
               scrollAnimationDuration={1000}
               data={updates.length > 0 ? updates : [{}]}
               style={{ alignSelf: 'center' }}
-              renderItem={({item}) =>
+              renderItem={({item}: {item: Partial<Update>}) =>
                 updates.length > 0 && item.title ? (
-                  <LinearGradient
-                    colors={['#004040', '#016361']}
-                    style={styles.carouselItem}
-                  >
-                    <View style={styles.carouselHeader}>
-                      <Text style={styles.carouselHeadText}>
-                        {item.head}
+                  <TouchableOpacity activeOpacity={0.8} onPress={() => openUpdateModal(item as Update)}>
+                    <LinearGradient
+                      colors={['#004040', '#016361']}
+                      style={styles.carouselItem}
+                    >
+                      <View style={styles.carouselHeader}>
+                        <Text style={styles.carouselHeadText}>
+                          {item.head}
+                        </Text>
+                        <Text style={styles.carouselDateText}>
+                          {item.date}
+                        </Text>
+                      </View>
+                      <Text style={styles.carouselTitleText} numberOfLines={2}>
+                        {item.title}
                       </Text>
-                      <Text style={styles.carouselDateText}>
-                        {item.date}
+                      <Text style={styles.carouselDescriptionText} numberOfLines={3}>
+                        {item.description}
                       </Text>
-                    </View>
-                    <Text style={styles.carouselTitleText} numberOfLines={2}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.carouselDescriptionText} numberOfLines={3}>
-                      {item.description}
-                    </Text>
-                  </LinearGradient>
+                    </LinearGradient>
+                  </TouchableOpacity>
                 ) : (
                   <View style={[styles.carouselItem, styles.carouselEmptyItem]}>
                     <Text style={styles.carouselEmptyText}>No updates available</Text>
@@ -404,10 +462,6 @@ const styles = StyleSheet.create({
   mainButtonTouchable: {
     flex: 1,
     backgroundColor: '#002b2b',
-    // Adjust borderRadius to account for the padding of the parent gradient
-    // If padding is responsiveWidth(0.25), this ensures the inner radius is slightly smaller
-    // or simply subtract a fixed small value if that was the original intent.
-    // Using responsiveWidth(2.54) - 1 to keep original logic of subtracting 1dp
     borderRadius: responsiveWidth(2.54) - 1, 
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
@@ -475,5 +529,50 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.6),
     width: '100%',
     textAlign: 'left',
+  },
+  // --- NEW MODAL STYLES ---
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContentContainer: {
+    width: responsiveWidth(90),
+    maxHeight: responsiveHeight(70),
+    backgroundColor: '#002b2b', // Match screen background
+    borderRadius: responsiveWidth(4),
+    padding: responsiveWidth(5),
+    borderWidth: 1,
+    borderColor: '#01B779',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: responsiveHeight(1.5),
+    right: responsiveWidth(3),
+    zIndex: 1,
+  },
+  modalTitle: {
+    fontFamily: 'SpaceGrotesk-Bold',
+    color: 'white',
+    fontSize: responsiveFontSize(2.2),
+    marginBottom: responsiveHeight(0.5),
+  },
+  modalDate: {
+    fontFamily: 'SpaceGrotesk-Medium',
+    color: '#A7F3D0',
+    fontSize: responsiveFontSize(1.6),
+    marginBottom: responsiveHeight(1.5),
+  },
+  modalDivider: {
+    height: 1,
+    backgroundColor: 'rgba(1, 183, 121, 0.5)',
+    marginBottom: responsiveHeight(1.5),
+  },
+  modalDescription: {
+    fontFamily: 'SpaceGrotesk-Regular',
+    color: '#E5E7EB',
+    fontSize: responsiveFontSize(1.8),
+    lineHeight: responsiveHeight(2.5),
   },
 });

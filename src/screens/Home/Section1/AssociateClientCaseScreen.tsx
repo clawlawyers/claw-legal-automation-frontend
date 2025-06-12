@@ -50,7 +50,7 @@ const AssociateClientCaseScreen = () => {
     // Navigate to SendCaseDetailsScreen, passing necessary case info
     
     if (passedCaseDetails) {
-      navigation.navigate('SendCaseDetailsScreen', {
+      navigation.navigate('CaseHearingDetailsScreen', {
         caseDetails: passedCaseDetails, 
       });
     } else {
@@ -229,7 +229,7 @@ const AssociateClientCaseScreen = () => {
                 end={{x: 1, y: 0.5}}
                 style={styles.actionButtonGradient}>
                 <Text style={[styles.actionButtonText, styles.spaceGroteskBold]}>
-                  Send Details
+                  Hearing Details
                 </Text>
               </LinearGradient>
             </Pressable>

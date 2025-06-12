@@ -16,15 +16,19 @@ import SendCaseDetailsScreen from '../screens/Home/Section5/SendCaseDetails';
 import ProceedingDetailsSentScreen from '../screens/Home/Section5/ProceedingDetailsSent';
 import LegalGptScreen from '../screens/Gpt/LegalGptScreen';
 import ClientUpdateSuccessScreen from '../screens/Home/Section3/ClientUpdateSuccess';
+import SearchedCaseListScreen from '../screens/Home/Section2/SearchedCaseListScreen'; // <-- Add the correct import path
+
 // Define your param list with route names and their params (undefined if none)
 export type HomeStackParamList = {
   HomeScreen: { fromLogin?: boolean } | undefined; 
   StartCaseSearch: undefined;
   CaseLoadScreen: undefined;
   CaseDetailsScreen: undefined;
+  CaseLoadingScreen: { fromScreen?: string };
   CaseAddedScreen: undefined;
   CaseNotFoundScreen: undefined;
   NoCasesAdded: undefined;
+  SearchCaseList : undefined; 
  // YourCasesListScreen: undefined;
   CaseDetailsDownloadScreen: undefined;
   AssociationScreen: undefined;
@@ -80,6 +84,10 @@ const HomeStack = () => {
       
       <Stack.Screen name="LegalGptScreen" component={LegalGptScreen} />
       <Stack.Screen name="YourCasesList" component={YourCasesListScreen} />
+           
+           
+      <Stack.Screen name="SearchCaseList" component={SearchedCaseListScreen} />
+      
     </Stack.Navigator>
   );
 };

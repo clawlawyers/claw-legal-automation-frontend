@@ -1,19 +1,21 @@
+// src/screens/Home/Section2/CaseLoadingScreen.tsx
+
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useRef} from 'react';
-import {View, Text, Animated} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
+import {View, Text, Animated, StyleSheet} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import {HomeStackParamList} from '../../../stacks/HomeStack';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type CaseLoadingNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
-  'CaseLoadScreen'
+  'CaseLoadingScreen'
 >;
 
-// Define a type for the route props to safely access params
 type CaseLoadingScreenRouteProp = RouteProp<
-  {CaseLoadingScreen: {fromScreen?: string}},
+  HomeStackParamList,
   'CaseLoadingScreen'
 >;
 
@@ -23,34 +25,37 @@ const CaseLoadingScreen = () => {
   const blinkOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Start blink animation
     const blinkAnimation = Animated.loop(
       Animated.sequence([
-        Animated.timing(blinkOpacity, {
-          toValue: 0.3,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(blinkOpacity, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
+        Animated.timing(blinkOpacity, { toValue: 0.3, duration: 600, useNativeDriver: true }),
+        Animated.timing(blinkOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
       ]),
     );
     blinkAnimation.start();
 
-    // Check which screen we navigated from
     const fromScreen = route.params?.fromScreen;
 
-    // Navigate after 3 seconds based on the origin screen
+    const searchResultScreens = [
+      'CnrInputScreen',
+      'CaseNumberInputScreen',
+      'FilingNumberInputScreen',
+      'PartyNameInputScreen',
+      'AdvocateNameInputScreen',
+      'BarIdInputScreen',
+    ];
+
     const timer = setTimeout(() => {
-      if (fromScreen === 'OtherwaysInputScreen') {
-        // Navigate to CaseListScreen as requested
-        navigation.navigate('CasesListScreen');
+      if (fromScreen && searchResultScreens.includes(fromScreen)) {
+        // Corrected the navigation destination to match the component name
+        // Make sure 'SearchedCaseListScreen' is the name in your Stack Navigator!
+        navigation.replace('SearchedCaseListScreen')
       } else {
-        // Default navigation to CaseDetailsScreen (from CaseInputScreen)
-        navigation.navigate('CaseDetailsScreen');
+        // Added a fallback: if no parameter is passed, just go back.
+        // This prevents the screen from getting stuck.
+        console.warn('CaseLoadingScreen was called without a "fromScreen" param. Navigating back.');
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        }
       }
     }, 3000);
 
@@ -58,41 +63,67 @@ const CaseLoadingScreen = () => {
       blinkAnimation.stop();
       clearTimeout(timer);
     };
-  }, [navigation, blinkOpacity, route.params]);
+  }, []); // Removed dependencies to prevent re-running on param changes
 
   return (
     <LinearGradient
       colors={['#062C2D', '#083F40']}
-      className="flex-1 justify-center items-center p-5">
-      <View className="items-center">
+      style={styles.container}>
+      <View style={styles.content}>
         <Animated.Image
           source={require('../../../assets/casesearch.png')}
-          style={{
-            width: 150,
-            height: 150,
-            opacity: blinkOpacity,
-            marginBottom: 30,
-          }}
+          style={[styles.image, {opacity: blinkOpacity}]}
           resizeMode="contain"
         />
-        <Text
-          style={{fontFamily: 'SpaceGrotesk-Bold'}}
-          className="text-2xl text-[#01B679] mb-4 text-center">
+        <Text style={styles.titleText}>
           Fetching Case
         </Text>
-        <Text
-          style={{fontFamily: 'SpaceGrotesk'}}
-          className="text-lg text-white text-center mb-2">
+        <Text style={styles.subtitleText}>
           Please Wait. It Might Take 1 - 3 Minutes
         </Text>
-        <Text
-          style={{fontFamily: 'SpaceGrotesk'}}
-          className="text-base text-gray-400 text-center">
+        <Text style={styles.infoText}>
           Only To Fetch Your Case
         </Text>
       </View>
     </LinearGradient>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  content: {
+    alignItems: 'center',
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: 30,
+  },
+  titleText: {
+    fontFamily: 'SpaceGrotesk-Bold',
+    fontSize: 24,
+    color: '#01B679',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  subtitleText: {
+    fontFamily: 'SpaceGrotesk-Regular',
+    fontSize: 18,
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  infoText: {
+    fontFamily: 'SpaceGrotesk-Regular',
+    fontSize: 16,
+    color: '#9CA3AF', // Corresponds to text-gray-400
+    textAlign: 'center',
+  },
+});
 
 export default CaseLoadingScreen;

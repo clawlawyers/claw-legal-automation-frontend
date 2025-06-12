@@ -10,11 +10,7 @@ import ClientDetailsScreen from '../screens/Home/Section3/ClientDetailsScreen';
 import ClientUpdateSuccess from '../screens/Home/Section3/ClientUpdateSuccess';
 import AddNewClientScreen from '../screens/Home/Section3/AddNewClient';
 import ViewClientCasesScreen from '../screens/Home/Section3/ViewClientCasesScreen';
-import SelectCourtScreen from '../screens/Home/Section2/SelectCourtScreen'; 
-import HighCourtCaseSelectionScreen from '../screens/Home/Section2/HighCourtCaseSelectionScreen';
-// import DistrictCourtCaseSelectionScreen from '../screens/Home/Section2/DistrictCourtCaseSelectionScreen';
-import DistrictCourtCaseSelectionScreen from '../screens/Home/Section2/DistrictCourtCaseSelectionScreen';
-import CaseInputScreen from '../screens/Home/Section2/CaseInputScreen';
+import MultipleTypesSearchScreen from '../screens/Home/Section2/MultipleTypesSearchScreen';
 // Import InputType from the appropriate file
 import FetchingCaseScreen from '../screens/Home/Section6/FetchingCase';
 import CaseLoadingScreen from '../screens/Home/Section1/CaseLoadingScreen'; // Adjust the path if needed
@@ -22,7 +18,22 @@ import AssociatedSetReminder from '../screens/Home/Section4/AssociatedSetReminde
 import AssociatedSetReminderScreen from '../screens/Home/Section4/AssociatedSetReminder';
 import AssociateClientCaseScreen from '../screens/Home/Section1/AssociateClientCaseScreen'; // Adjust the path if needed
 import SendCaseDetailsScreen from '../screens/Home/Section5/SendCaseDetails';
-import OtherwaysInputScreen from '../screens/Home/Section2/OtherWaysInputScreen';
+import CnrInputScreen from '../screens/Home/Section2/CnrInputScreen';
+import SearchedCaseListScreen from '../screens/Home/Section2/SearchedCaseListScreen';
+import CaseNumberInputScreen from '../screens/Home/Section2/CaseNumberInputScreen';
+import FilingNumberInputScreen from '../screens/Home/Section2/FilingNumberInputScreen';
+import PartyNameInputScreen from '../screens/Home/Section2/PartyNameInputScreen';
+import AdvocateNameInputScreen from '../screens/Home/Section2/AdvocateNameInputScreen';
+import BarIdInputScreen from '../screens/Home/Section2/BarIdInputScreen';
+import CaseHearingDetailsScreen from '../screens/Home/Section5/CaseHearingDetailsScreen'; // Adjust the path if needed
+import HearingOrderDetailsScreen from '../screens/Home/Section5/HearingOrderDetailsScreen';
+import SendHearingMessageScreen from '../screens/Home/Section5/SendHearingMessageScreen';
+import SelectClientsScreen from '../screens/Home/Section5/SelectClientsScreen'; // Adjust the path if needed
+import ProceedingDetailsSentScreen from '../screens/Home/Section5/ProceedingDetailsSent'; // Adjust the path if needed
+import CasePaymentDetailsScreen from '../screens/Home/Section5/CasePaymentDetailsScreen'; // Adjust the path if needed
+import SendInvoiceReminderScreen from '../screens/Home/Section5/SendInvoiceReminderScreen'; // Add this import
+import InvoiceReminderSentScreen from '../screens/Home/Section5/InvoiceReminderSentScreen'; // Add this import
+
 export type CaseDetailsType  = {
   clawId: string;
   crn: string;
@@ -53,9 +64,8 @@ export type YourCasesStackParamList = {
   ClientUpdateSuccess: undefined;
   AddNewClientScreen: undefined;
   ViewClientCasesScreen: undefined;
-  SelectCourtScreen: undefined;
-  HighCourtCaseSelectionScreen: undefined;
-  DistrictCourtCaseSelectionScreen: undefined;
+  MultipleTypesSearchScreen: undefined;
+ 
   CaseDetailsScreen: undefined; 
   CaseAddedScreen : undefined; 
    NoActiveAlertsScreen?: undefined;
@@ -64,17 +74,27 @@ export type YourCasesStackParamList = {
    AssociationScreen: { clientName: string; clientId?: string };
    SendCaseDetailsScreen : { caseDetails: CaseDetailsType };
    CaseLoadingScreen: { fromScreen: string } | undefined;
-   OtherwaysInputScreen: undefined; // Adjust the type if needed
    
    // Adjust the type if needed
-  
-  
+   CnrInputScreen : undefined;
+   SearchedCaseListScreen : undefined; 
    
+   CaseNumberInputScreen : undefined; 
+   FilingNumberInputScreen : undefined;
+   PartyNameInputScreen : undefined; 
+   AdvocateNameInputScreen : undefined;
+   BarIdInputScreen: undefined; 
+   CaseHearingDetailsScreen :undefined;
+   HearingOrderDetailsScreen :undefined;
+   SendHearingCaseDetails : undefined;
+   SendHearingMessageScreen :undefined;
+   SelectClientsScreen : undefined; 
+   ProceedingDetailsSent :undefined;
+   CasePaymentDetailsScreen : undefined; 
+   SendInvoiceReminderScreen : undefined; 
+   InvoiceReminderSentScreen : undefined;
 
-    CaseInputScreen: {
-    
-    
-     }
+
   FetchingCaseScreen: { // Define params if you need to pass data
     // from CaseInputScreen
     crnValue?: string;
@@ -121,12 +141,20 @@ const YourCasesStack = () => {
         name="ViewClientCasesScreen"
         component={ViewClientCasesScreen}
       />
-            <Stack.Screen name="HighCourtCaseSelectionScreen" component={HighCourtCaseSelectionScreen} />
-             <Stack.Screen name="DistrictCourtCaseSelectionScreen" component={DistrictCourtCaseSelectionScreen} />
 
-      <Stack.Screen name="SelectCourtScreen" component={SelectCourtScreen} />
+      <Stack.Screen name="MultipleTypesSearchScreen" component={MultipleTypesSearchScreen} />
 
-      <Stack.Screen name="CaseInputScreen" component={CaseInputScreen} />
+      <Stack.Screen name="CnrInputScreen" component={CnrInputScreen} />
+     <Stack.Screen name="SearchedCaseListScreen" component={SearchedCaseListScreen} />
+
+     <Stack.Screen name="CaseNumberInputScreen" component={ CaseNumberInputScreen} />
+     <Stack.Screen name="FilingNumberInputScreen" component={ FilingNumberInputScreen} />
+     <Stack.Screen name="PartyNameInputScreen" component={  PartyNameInputScreen} />
+     <Stack.Screen name="AdvocateNameInputScreen" component={ AdvocateNameInputScreen} />
+      <Stack.Screen name="BarIdInputScreen" component={BarIdInputScreen} />
+
+
+
        <Stack.Screen name="FetchingCaseScreen" component={FetchingCaseScreen} />
       
         <Stack.Screen name="CaseDetailsScreen" component={CaseDetailsScreen} />
@@ -136,7 +164,17 @@ const YourCasesStack = () => {
         <Stack.Screen name="ClientUpdateSuccessScreen" component={ClientUpdateSuccess} />
         <Stack.Screen name="AssociateClientCaseScreen" component={AssociateClientCaseScreen} />
         <Stack.Screen name="SendCaseDetailsScreen" component={SendCaseDetailsScreen} />
-        <Stack.Screen name="OtherwaysInputScreen" component={OtherwaysInputScreen} />
+         <Stack.Screen name="SendHearingCaseDetails" component={SendCaseDetailsScreen} />
+
+        <Stack.Screen name='CaseHearingDetailsScreen' component={CaseHearingDetailsScreen}/>
+        <Stack.Screen name='HearingOrderDetailsScreen' component={HearingOrderDetailsScreen}/>
+        <Stack.Screen name='SendHearingMessageScreen' component={SendHearingMessageScreen} />
+        <Stack.Screen name='SelectClientsScreen' component={SelectClientsScreen}/>
+        <Stack.Screen name='ProceedingDetailsSent' component={ProceedingDetailsSentScreen}/>
+        <Stack.Screen name='CasePaymentDetailsScreen' component={CasePaymentDetailsScreen} />
+        <Stack.Screen name='SendInvoiceReminderScreen' component={SendInvoiceReminderScreen} />
+        <Stack.Screen name='InvoiceReminderSentScreen' component={InvoiceReminderSentScreen}/>
+
 
      
       {/* Add other screens as needed */}

@@ -78,7 +78,7 @@ const navigation = useNavigation<NoCasesAddedNavigationProp>();
             end={{x: 1, y: 0}}
             className="w-full h-12 justify-center items-center">
             <Pressable
-                onPress={() => navigation.navigate('SelectCourtScreen')}          
+                onPress={() => navigation.navigate('MultipleTypesSearchScreen')}          
                 className="w-full h-full justify-center items-center"
               android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
               <Text
