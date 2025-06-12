@@ -23,6 +23,8 @@ type PaymentEntry = {
 };
 type YourStackParamList = {
   CasePaymentDetailsScreen: undefined;
+  SelectClientScreen: undefined;
+  SendInvoiceReminderScreen: undefined;
 };
 type CasePaymentDetailsNavigationProp = NavigationProp<
   YourStackParamList,
@@ -198,7 +200,7 @@ const CasePaymentDetailsScreen = () => {
 
         {/* Footer Buttons */}
         <View style={styles.footer}>
-          <TouchableOpacity style={{flex: 1}} onPress={handleUpdatePayment}>
+          <TouchableOpacity style={{flex: 1}} onPress={() => handleUpdatePayment()}>
             <LinearGradient
               colors={['#01B779', '#008C68']}
               style={styles.footerButton}>
@@ -208,7 +210,7 @@ const CasePaymentDetailsScreen = () => {
           <View style={{width: 16}} />
           <TouchableOpacity
             style={{flex: 1}}
-            onPress={() => Alert.alert('Send Reminder', 'Reminder sent.')}>
+            onPress={() => navigation.navigate('SendInvoiceReminderScreen')}>
             <LinearGradient
               colors={['#01B779', '#008C68']}
               style={styles.footerButton}>

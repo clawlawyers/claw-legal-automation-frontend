@@ -61,6 +61,7 @@ const AssociateClientCaseScreen = () => {
 
   const handleSetReminder = () => {
     console.log('Set Reminder pressed for case:', passedCaseDetails?.claw_case_id);
+    navigation.navigate('SetReminderScreen');
   };
 
   const handleAddClient = () => {

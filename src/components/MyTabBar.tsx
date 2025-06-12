@@ -96,6 +96,13 @@ const HIDDEN_ROUTES = ['Splash',
   'AdvocateCaseListScreen',
   'FirmAdvocateDetailsScreen',
   'FirmAdvocateListScreen',
+  'AssociatedSetReminderScreen',
+  'CreateNewCaseScreen',
+  'StartAutomatedAlertsScreen',
+  'SetReminderScreen',
+  'AutomatedAlertsActiveScreen',
+
+  
 
 
 ];

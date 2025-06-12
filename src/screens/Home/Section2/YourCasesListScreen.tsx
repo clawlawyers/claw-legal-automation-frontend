@@ -112,7 +112,7 @@ const YourCasesListScreen = () => {
   };
 
   const handleAddCasesPress = () => {
-    navigation.navigate('SelectCourtScreen');
+    navigation.navigate('MultipleTypesSearchScreen');
     console.log("Add Cases pressed, navigating to SelectCourtScreen");
   };
 

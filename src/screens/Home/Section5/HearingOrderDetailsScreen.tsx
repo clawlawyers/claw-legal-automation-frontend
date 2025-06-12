@@ -16,6 +16,7 @@ type YourStackParamList = {
   HearingOrderDetailsScreen: undefined;
   SendHearingMessageScreen: undefined; 
   SendInvoiceReminderScreen: undefined; 
+  CasePaymentDetailsScreen: undefined;
   // ... other screens in your stack
 };
 
@@ -95,7 +96,7 @@ const HearingOrderDetailsScreen = () => {
           {/* Client Payment Reminder Button  */}
           <TouchableOpacity
             style={{marginTop: 24}}
-            onPress={() => navigation.navigate('SendInvoiceReminderScreen')}>
+            onPress={() => navigation.navigate('CasePaymentDetailsScreen')}>
             <LinearGradient
               colors={['#01B779', '#008C68']}
               style={styles.largeButton}>

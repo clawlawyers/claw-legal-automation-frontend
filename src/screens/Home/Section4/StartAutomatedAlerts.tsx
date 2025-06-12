@@ -259,7 +259,7 @@ const StartAutomatedAlertsScreen = () => {
             <Text
               style={{fontFamily: 'SpaceGrotesk-Bold'}}
               className="text-white text-base">
-              Create New Case
+              Start Automated Alerts
             </Text>
           </Pressable>
         </LinearGradient>
