@@ -33,7 +33,7 @@ const AddNewClientScreen = () => {
   const navigation = useNavigation<AddNewClientScreenNavigationProp>();
 
   const handleClientPress = (client: {id: string; name: string}) => {
-    navigation.navigate('AssociationScreen', {
+    navigation.navigate('ViewClientCasesScreen', {
       clientName: client.name,
       clientId: client.id,
     });

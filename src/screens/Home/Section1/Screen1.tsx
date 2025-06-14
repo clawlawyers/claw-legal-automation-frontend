@@ -62,17 +62,17 @@ const mainButtonsData = [
   {
     label: 'Get All\nJudgements',
     icon: require('../../../assets/images/button1.png'),
-    onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate('Alerts', { screen: 'GetLegalJudgements' })
+    onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate('GetLegalJudgementsScreen')
   },
   {
     label: 'Start\nCase Search',
     icon: require('../../../assets/images/button2.png'),
-   // onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate('StartCaseSearch'),
+   onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate('GetLegalCasesScreen'),
   },
   {
     label: 'Get\nCause List',
     icon: require('../../../assets/images/button3.png'),
-    onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate('Alerts', { screen: 'GetCauseListScreen' }),
+    onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate('GetCauseListScreen' ),
   },
   {
     label: 'Start\nLegal GPT',
@@ -95,7 +95,7 @@ const clienteleData = [
   {
     label: 'Set Up Case\nReminder',
     image: require('../../../assets/images/client3.png'),
-    onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate( 'YourCasesListScreen' )
+    onPress: (navigation: HomeScreenNavigationProp) => navigation.navigate( 'CaseListScreen' )
   },
 ];
 
@@ -207,7 +207,6 @@ export default function HomeScreen({route}: HomeScreenComponentProps) {
               loop
               width={responsiveWidth(83.72)}
               height={responsiveHeight(17.14)}
-              paddingTop={responsiveHeight(2)}
               autoPlay
               autoPlayInterval={3000}
               scrollAnimationDuration={1000}

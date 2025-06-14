@@ -34,11 +34,11 @@ const LoginScreen = () => {
 
   const handleLogin = () => {
     // Basic validation example
-    if (!email || !password) {
-      console.log('Please enter email and password');
-      return;
-    }
-    console.log(`Logging in as ${selectedRole} with email: ${email}`);
+    // if (!email || !password) {
+    //   console.log('Please enter email and password');
+    //   return;
+    // }
+    // console.log(`Logging in as ${selectedRole} with email: ${email}`);
     navigation.replace('PostAuthLoadingScreen');
   };
 

@@ -253,7 +253,7 @@ const ViewClientCasesScreen = () => {
             end={{x: 1, y: 0}}
             className="flex-1 h-12 rounded-lg overflow-hidden">
             <Pressable
-              onPress={() => console.log("Edit client pressed")}
+              onPress={() => navigation.navigate('ClientDetailsScreen')}
               className="w-full h-full justify-center items-center"
               android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
               <Text
@@ -279,6 +279,7 @@ const ViewClientCasesScreen = () => {
                 // but this should be fixed by defining the route or choosing a valid one.
                 // navigation.navigate('NoActiveAlertsScreen' as any);
                  console.log("View All Client Cases (button) pressed - Navigation target might need review");
+                 //navigation.navigate('NoActiveAlertsScreen');
             }}
             >
             <Text

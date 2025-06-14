@@ -19,7 +19,7 @@ const ClientUpdateSuccess = () => {
       {/* Back Button */}
       <View className="mt-6">
         <Pressable
-          onPress={() => navigation.navigate('AssociateClientCaseScreen')}
+           onPress={() => navigation.goBack()}
           className="w-10 h-10 justify-center items-center rounded-full border border-[#01B779]">
           <Icon name="arrow-left" size={20} color="#01B779" />
         </Pressable>

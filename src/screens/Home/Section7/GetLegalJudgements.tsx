@@ -13,12 +13,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
-import {useNavigation} from '@react-navigation/native';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { NativeStackScreenProps} from '@react-navigation/native-stack';
 import DatePicker from 'react-native-date-picker';
 
-type ScreenProp = NativeStackNavigationProp<
+type ScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'GetLegalJudgements'
 >;
@@ -26,8 +25,8 @@ type ScreenProp = NativeStackNavigationProp<
 const courtTypes = ['District Court', 'State High Court', 'Supreme Court'];
 const fetchTypes = ['Orders', 'Judgements'];
 
-const GetLegalJudgements = () => {
-  const navigation = useNavigation<ScreenProp>();
+const GetLegalJudgements = (props : ScreenProp) => {
+  const {navigation} = props;
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
@@ -153,7 +152,7 @@ const GetLegalJudgements = () => {
                 className="p-px rounded-lg">
                 <TouchableOpacity
                   onPress={() => setOpen(true)}
-                  className="bg-[#062C2D] rounded-lg px-4 h-11 justify-center flex-row items-center justify-between">
+                  className="bg-[#062C2D] rounded-lg px-4 h-11 flex-row items-center justify-between">
                   <Text style={{color: '#ACACAC', fontFamily: 'SpaceGrotesk'}}>
                     {selectedDate
                       ? selectedDate.toDateString()
@@ -169,7 +168,7 @@ const GetLegalJudgements = () => {
                 className="p-px rounded-lg">
                 <TouchableOpacity
                   onPress={() => setOpen(true)}
-                  className="bg-[#062C2D] rounded-lg px-4 h-11 justify-center flex-row items-center justify-between">
+                  className="bg-[#062C2D] rounded-lg px-4 h-11 flex-row items-center justify-between">
                   <Text style={{color: '#ACACAC', fontFamily: 'SpaceGrotesk'}}>
                     {selectedDate
                       ? selectedDate.toDateString()

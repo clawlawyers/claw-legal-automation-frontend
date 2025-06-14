@@ -101,6 +101,10 @@ const HIDDEN_ROUTES = ['Splash',
   'StartAutomatedAlertsScreen',
   'SetReminderScreen',
   'AutomatedAlertsActiveScreen',
+  'CaseSummaryScreen',
+  'SearchCaseDetailsScreen',
+  'CaseResultsScreen',
+  'GetLegalCasesScreen',
 
   
 

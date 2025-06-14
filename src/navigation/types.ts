@@ -13,4 +13,7 @@ export type RootTabParamList = {
   Alerts: NavigatorScreenParams<YourAlertsStackParamList>; 
   Account: NavigatorScreenParams<AccountStackParamList>; 
   Settings: NavigatorScreenParams<SettingsStackParamList>; 
+  
+  Profile: undefined;
+ 
 };
