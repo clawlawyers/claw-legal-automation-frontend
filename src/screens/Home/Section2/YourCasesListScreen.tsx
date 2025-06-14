@@ -54,61 +54,54 @@ const YourCasesListScreen = ({
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.auth.user);
 
-  console.log(caseLists);
-
   useEffect(() => {
     const getCase = async () => {
       if (!currentUser?.token) {
         console.error('No user token found');
         return;
       }
-      setLoading(true);
-      const caseList = await fetch(`${NODE_API_ENDPOINT}/case/getCases/user`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${currentUser?.token}`,
-        },
-      });
-      if (!caseList.ok) {
-        console.error('Failed to fetch cases:', caseList.statusText);
-        setLoading(false);
-        throw new Error('Failed to fetch cases');
-      }
-      setLoading(false);
-      const data = await caseList.json();
-      console.log(data);
-      setCaseLists(data.cases);
-      setFilterCase(data.cases);
-      dispatch(setCases(data.cases));
-    };
-    if (currentUser?.token) {
-      getCase().catch(error => {
+      setLoading(true); // ✅ Show loader while fetching
+
+      try {
+        const caseList = await fetch(
+          `${NODE_API_ENDPOINT}/case/getCases/user`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${currentUser?.token}`,
+            },
+          },
+        );
+
+        if (!caseList.ok) {
+          console.error('Failed to fetch cases:', caseList.statusText);
+          throw new Error('Failed to fetch cases');
+        }
+
+        const data = await caseList.json();
+        setCaseLists(data.cases);
+        setFilterCase(data.cases);
+
+        if (data?.cases?.length === 0) {
+          navigation?.replace('NoCasesAdded');
+        }
+
+        dispatch(setCases(data.cases));
+      } catch (error) {
         console.error('Error fetching cases:', error);
-      });
-      setLoading(false);
+      } finally {
+        setLoading(false); // ✅ Only hide loader after fetch attempt completes
+      }
+    };
+
+    if (currentUser?.token) {
+      getCase();
     }
-  }, [currentUser?.token, dispatch]);
+  }, [currentUser?.token, dispatch, navigation]);
 
-  console.log(loading);
-
-  // useEffect(() => {
-  //   if (searchText.trim() === '') {
-  //     setFilterCase(caseLists);
-  //   } else {
-  //     const filteredCases = caseLists.filter(item => {
-  //       if (!selectedParameter) return true;
-  //       const key = selectedParameter as keyof CaseDetailsType;
-  //       if (item.hasOwnProperty(key) && typeof item[key] === 'string') {
-  //         return (item[key] as string)
-  //           .toLowerCase()
-  //           .includes(searchText.trim().toLowerCase());
-  //       }
-  //       return false;
-  //     });
-  //     setFilterCase(filteredCases);
-  //   }
-  // }, [searchText, selectedParameter, caseLists]);
+  console.log(caseLists);
+  console.log(loading, 'length of caseLists:', caseLists.length);
 
   useEffect(() => {
     if (searchText.trim() === '') {
@@ -127,26 +120,26 @@ const YourCasesListScreen = ({
     }
   }, [searchText, selectedParameter, caseLists]);
 
+  if (loading) {
+    return (
+      <SafeAreaView
+        className="flex-1 bg-[#062C2D] px-5 pb-5"
+        style={{
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        }}>
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#01B779" />
+          <Text className="text-white mt-4">Loading cases...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   const parameterOptions = [
     {label: 'Claw Case ID', value: 'clawCaseId'},
     {label: 'CRN No', value: 'crnNum'},
     {label: 'Case Type', value: 'caseType'},
   ];
-
-  // const filteredCases = caseLists?.filter(item => {
-  //   if (!selectedParameter || !searchText.trim()) {
-  //     return true;
-  //   }
-  //   const key = selectedParameter as keyof CaseListItemType;
-  //   if (item.hasOwnProperty(key) && typeof item[key] === 'string') {
-  //     return (item[key] as string)
-  //       .toLowerCase()
-  //       .includes(searchText.trim().toLowerCase());
-  //   }
-  //   return false;
-  // });
-
-  // console.log(filteredCases);
 
   const handleCaseItemPress = (item: CaseListItemType) => {
     console.log('Navigating to associate client for case:', item.claw_case_id);
@@ -173,23 +166,6 @@ const YourCasesListScreen = ({
     console.log('View Firm Cases pressed. Implement navigation here.');
     // Example navigation: navigation.navigate('FirmCasesScreen');
   };
-  if (loading) {
-    return (
-      <SafeAreaView
-        className="flex-1 bg-[#062C2D] px-5 pb-5"
-        style={{
-          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-        }}>
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#01B779" />
-          <Text className="text-white mt-4">Loading cases...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  } else if (caseLists.length === 0) {
-    navigation.replace('NoCasesAdded');
-    return;
-  }
 
   return (
     <SafeAreaView
