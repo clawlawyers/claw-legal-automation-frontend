@@ -21,6 +21,7 @@ import {YourCasesStackParamList} from '../../../stacks/YourCasesStack'; // Adjus
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SelectCourtModal from '../../../components/SelectCourtModal'; // Import the reusable modal
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -36,9 +37,9 @@ const scaleText = (pixelFontSize: number): number => {
 };
 
 
-type AdvocateNameInputScreenNavigationProp = NavigationProp<
+type AdvocateNameInputScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
-  'CaseInputScreen' 
+  'AdvocateNameInputScreen' 
 >;
 
 type CourtData = {
@@ -49,8 +50,8 @@ type CourtData = {
   district?: string | null;
 };
 
-const AdvocateNameInputScreen = () => {
-  const navigation = useNavigation<AdvocateNameInputScreenNavigationProp>();
+const AdvocateNameInputScreen = (props : AdvocateNameInputScreenNavigationProp) => {
+  const {navigation} = props;
   
   const [advocateName, setAdvocateName] = useState('');
 

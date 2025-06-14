@@ -5,13 +5,14 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type ClientUpdateSuccessNavigationProp = NavigationProp<  YourCasesStackParamList,'ClientUpdateSuccess'
+type ClientUpdateSuccessNavigationProp = NativeStackScreenProps<  YourCasesStackParamList,'ClientUpdateSuccess'
 
 >;
 
-const ClientUpdateSuccess = () => {
-  const navigation = useNavigation<ClientUpdateSuccessNavigationProp>();
+const ClientUpdateSuccess = (props : ClientUpdateSuccessNavigationProp) => {
+  const {navigation} = props;
 
 
   return (

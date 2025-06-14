@@ -10,6 +10,7 @@ import {
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 
 type CaseDetailsStackParamList = {
@@ -17,7 +18,7 @@ type CaseDetailsStackParamList = {
   HearingOrderDetailsScreen: { hearingId: string; hearingDate: string }; // Example params
 };
 
-type CaseHearingDetailsNavigationProp = NavigationProp<
+type CaseHearingDetailsNavigationProp = NativeStackScreenProps<
   CaseDetailsStackParamList,
   'CaseHearingDetailsScreen'
 >;
@@ -36,8 +37,8 @@ const hearingData = [
   {id: '9', date: '15/09/2024'},
 ];
 
-const CaseHearingDetailsScreen = () => {
-  const navigation = useNavigation<CaseHearingDetailsNavigationProp>();
+const CaseHearingDetailsScreen = (props : CaseHearingDetailsNavigationProp) => {
+  const {navigation} = props;
 
   const handleHearingPress = (item: typeof hearingData[0]) => {
     navigation.navigate('HearingOrderDetailsScreen', {

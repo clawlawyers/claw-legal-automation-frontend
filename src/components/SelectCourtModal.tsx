@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  FlatList,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
@@ -26,9 +28,37 @@ const scaleText = (pixelFontSize: number): number => {
 };
 // --- End Helper Functions ---
 
-type CourtType = 'highCourt' | 'districtCourt';
+// --- Dummy Data ---
+const HIGH_COURT_DATA: {[key: string]: string[]} = {
+  'Allahabad High Court': ['Principal Bench at Allahabad', 'Bench at Lucknow'],
+  'Bombay High Court': [
+    'Principal Bench at Mumbai',
+    'Bench at Aurangabad',
+    'Bench at Nagpur',
+    'Bench at Goa',
+  ],
+  'Calcutta High Court': [
+    'Principal Bench at Kolkata',
+    'Circuit Bench at Port Blair',
+    'Circuit Bench at Jalpaiguri',
+  ],
+  'Delhi High Court': ['Principal Bench at New Delhi'],
+  'Madras High Court': ['Principal Bench at Chennai', 'Bench at Madurai'],
+};
 
-interface CourtData {
+const DISTRICT_COURT_DATA: {[key: string]: string[]} = {
+  Maharashtra: ['Mumbai City Civil Court', 'Pune District Court', 'Nagpur District Court'],
+  Uttar: ['Lucknow District Court', 'Kanpur District Court', 'Varanasi District Court'],
+  'New Delhi': ['Tis Hazari Court Complex', 'Saket Court Complex', 'Rohini Court Complex'],
+  Karnataka: ['Bengaluru Urban District Court', 'Mysuru District Court', 'Mangaluru District Court'],
+  Tamil: ['Chennai District Court', 'Coimbatore District Court', 'Madurai District Court'],
+};
+
+// --- Exportable Types ---
+type CourtType = 'highCourt' | 'districtCourt';
+type SelectionType = 'highCourt' | 'bench' | 'state' | 'district';
+
+export interface CourtData {
   courtType: CourtType | null;
   highCourt?: string | null;
   bench?: string | null;
@@ -41,6 +71,48 @@ interface SelectCourtModalProps {
   onClose: () => void;
   onSave: (data: CourtData) => void;
 }
+
+// --- Reusable Selection Modal Component ---
+const SelectionListModal = ({
+  modalVisible,
+  setModalVisible,
+  data,
+  onSelect,
+  title,
+}: {
+  modalVisible: boolean;
+  setModalVisible: (visible: boolean) => void;
+  data: string[];
+  onSelect: (item: string) => void;
+  title: string;
+}) => (
+  <Modal
+    animationType="fade"
+    transparent={true}
+    visible={modalVisible}
+    onRequestClose={() => setModalVisible(false)}>
+    <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+      <View style={styles.selectionModalOverlay}>
+        <TouchableWithoutFeedback>
+          <View style={styles.selectionModalContent}>
+            <Text style={styles.selectionModalTitle}>{title}</Text>
+            <FlatList
+              data={data}
+              keyExtractor={item => item}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={styles.selectionModalItem}
+                  onPress={() => onSelect(item)}>
+                  <Text style={styles.selectionModalItemText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    </TouchableWithoutFeedback>
+  </Modal>
+);
 
 const SelectCourtModal = ({
   visible,
@@ -60,7 +132,13 @@ const SelectCourtModal = ({
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
 
-  // Effect to clear selections when court type changes
+  // State for the selection modal
+  const [isSelectionModalVisible, setSelectionModalVisible] = useState(false);
+  const [modalData, setModalData] = useState<string[]>([]);
+  const [modalTitle, setModalTitle] = useState('');
+  const [currentSelectionType, setCurrentSelectionType] =
+    useState<SelectionType | null>(null);
+
   useEffect(() => {
     if (selectedCourtType === 'highCourt') {
       setSelectedState(null);
@@ -106,10 +184,61 @@ const SelectCourtModal = ({
     onClose();
   };
 
+  const openSelectionModal = (type: SelectionType) => {
+    setCurrentSelectionType(type);
+    switch (type) {
+      case 'highCourt':
+        setModalData(Object.keys(HIGH_COURT_DATA));
+        setModalTitle('Select High Court');
+        break;
+      case 'bench':
+        if (!selectedHighCourt) {
+          Toast.show({type: 'info', text2: 'Please select a High Court first.'});
+          return;
+        }
+        setModalData(HIGH_COURT_DATA[selectedHighCourt]);
+        setModalTitle('Select Bench');
+        break;
+      case 'state':
+        setModalData(Object.keys(DISTRICT_COURT_DATA));
+        setModalTitle('Select State');
+        break;
+      case 'district':
+        if (!selectedState) {
+          Toast.show({type: 'info', text2: 'Please select a State first.'});
+          return;
+        }
+        setModalData(DISTRICT_COURT_DATA[selectedState]);
+        setModalTitle('Select District');
+        break;
+    }
+    setSelectionModalVisible(true);
+  };
+
+  const handleSelection = (item: string) => {
+    switch (currentSelectionType) {
+      case 'highCourt':
+        setSelectedHighCourt(item);
+        setSelectedBench(null); // Reset bench when high court changes
+        break;
+      case 'bench':
+        setSelectedBench(item);
+        break;
+      case 'state':
+        setSelectedState(item);
+        setSelectedDistrict(null); // Reset district when state changes
+        break;
+      case 'district':
+        setSelectedDistrict(item);
+        break;
+    }
+    setSelectionModalVisible(false);
+  };
+
   const renderDropdown = (
     placeholder: string,
     value: string | null,
-    onSelect: (val: string) => void,
+    type: SelectionType,
   ) => (
     <LinearGradient
       colors={['#016361', '#01B779']}
@@ -118,7 +247,7 @@ const SelectCourtModal = ({
       style={styles.dropdownBorder}>
       <TouchableOpacity
         style={styles.dropdownInner}
-        onPress={() => onSelect('Mock Selection')}>
+        onPress={() => openSelectionModal(type)}>
         <Text style={value ? styles.dropdownText : styles.dropdownPlaceholder}>
           {value || placeholder}
         </Text>
@@ -151,14 +280,12 @@ const SelectCourtModal = ({
             </LinearGradient>
           </View>
 
-          {/* --- BUTTON LOGIC HAS BEEN SWAPPED HERE --- */}
           <View style={styles.toggleContainer}>
             {['highCourt', 'districtCourt'].map(type => {
               const isSelected = selectedCourtType === type;
               const label =
                 type === 'highCourt' ? 'High Court' : 'District Court';
 
-              // If the button IS SELECTED, show the SOLID FILL style.
               if (isSelected) {
                 return (
                   <LinearGradient
@@ -172,7 +299,6 @@ const SelectCourtModal = ({
                 );
               }
 
-              // If the button IS NOT SELECTED, show the BORDER style and make it clickable.
               return (
                 <TouchableOpacity
                   key={type}
@@ -191,22 +317,18 @@ const SelectCourtModal = ({
 
           {selectedCourtType === 'highCourt' && (
             <View style={styles.dropdownsContainer}>
-              {renderDropdown(
-                'Select High Court',
-                selectedHighCourt,
-                setSelectedHighCourt,
-              )}
-              {renderDropdown('Select Bench', selectedBench, setSelectedBench)}
+              {renderDropdown('Select High Court', selectedHighCourt, 'highCourt')}
+              {renderDropdown('Select Bench', selectedBench, 'bench')}
             </View>
           )}
 
           {selectedCourtType === 'districtCourt' && (
             <View style={styles.dropdownsContainer}>
-              {renderDropdown('Select State', selectedState, setSelectedState)}
+              {renderDropdown('Select State', selectedState, 'state')}
               {renderDropdown(
                 'Select District Court',
                 selectedDistrict,
-                setSelectedDistrict,
+                'district',
               )}
             </View>
           )}
@@ -223,6 +345,13 @@ const SelectCourtModal = ({
           </TouchableOpacity>
         </View>
       </View>
+      <SelectionListModal
+        modalVisible={isSelectionModalVisible}
+        setModalVisible={setSelectionModalVisible}
+        data={modalData}
+        onSelect={handleSelection}
+        title={modalTitle}
+      />
     </Modal>
   );
 };
@@ -290,7 +419,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: getHeightPercentage(20),
   },
-  // Style for the SELECTED (solid fill) button
   toggleButtonSolid: {
     width: getWidthPercentage(134),
     height: getHeightPercentage(50),
@@ -298,14 +426,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // Style for the UNSELECTED (border) button's wrapper
   toggleButtonBorder: {
     width: getWidthPercentage(134),
     height: getHeightPercentage(50),
     borderRadius: 10,
     padding: 1.5,
   },
-  // Style for the dark inner part of the UNSELECTED button
   toggleButtonInner: {
     width: '100%',
     height: '100%',
@@ -356,6 +482,39 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontFamily: 'SpaceGrotesk-Bold',
     fontSize: scaleText(16),
+    color: '#FFFFFF',
+  },
+  // --- Selection Modal Styles ---
+  selectionModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectionModalContent: {
+    backgroundColor: '#0A3A40',
+    width: '85%',
+    maxHeight: '60%',
+    borderRadius: 15,
+    padding: getWidthPercentage(20),
+    borderWidth: 1,
+    borderColor: '#01B779',
+  },
+  selectionModalTitle: {
+    fontFamily: 'SpaceGrotesk-Bold',
+    fontSize: scaleText(18),
+    color: '#FFFFFF',
+    marginBottom: getHeightPercentage(15),
+    textAlign: 'center',
+  },
+  selectionModalItem: {
+    paddingVertical: getHeightPercentage(12),
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  selectionModalItemText: {
+    fontFamily: 'SpaceGrotesk-Medium',
+    fontSize: scaleText(15),
     color: '#FFFFFF',
   },
 });

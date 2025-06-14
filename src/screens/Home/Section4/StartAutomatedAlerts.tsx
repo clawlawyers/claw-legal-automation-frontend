@@ -14,18 +14,18 @@ import {
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Dropdown} from 'react-native-element-dropdown';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 
-type StartAutomatedAlertsScreenProp = NativeStackNavigationProp<
+type StartAutomatedAlertsScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'StartAutomatedAlertsScreen'
 >;
 
-const StartAutomatedAlertsScreen = () => {
-  const navigation = useNavigation<StartAutomatedAlertsScreenProp>();
+const StartAutomatedAlertsScreen = (props : StartAutomatedAlertsScreenProp) => {
+  const {navigation} = props;
 
   const [selectedParameter, setSelectedParameter] = useState<string | null>(
     null,

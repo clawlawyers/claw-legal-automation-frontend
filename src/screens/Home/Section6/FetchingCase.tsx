@@ -5,16 +5,16 @@ import {View, Text, Animated, Easing} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
 
-type FetchingCaseScreenProp = NativeStackNavigationProp<
+type FetchingCaseScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'FetchingCaseScreen'
 >;
 
-const FetchingCaseScreen = () => {
-  const navigation = useNavigation<FetchingCaseScreenProp>();
+const FetchingCaseScreen = (props : FetchingCaseScreenProp) => {
+  const {navigation} = props;
   const spinValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

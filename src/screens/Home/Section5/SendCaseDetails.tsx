@@ -13,19 +13,19 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '../../../stacks/HomeStack'; // Adjust path if needed
 
 const clients = ['Rahul Prajapati', 'Sophia Tran', 'David Kim', 'Emily Smith'];
 
 // Use the corrected HomeStackParamList for navigation props
-type SendCaseDetailsScreenProp = NativeStackNavigationProp<
+type SendCaseDetailsScreenProp = NativeStackScreenProps<
   HomeStackParamList,
   'SendCaseDetailsScreen'
 >;
 
-const SendCaseDetailsScreen = () => {
-  const navigation = useNavigation<SendCaseDetailsScreenProp>();
+const SendCaseDetailsScreen = (props : SendCaseDetailsScreenProp) => {
+  const {navigation} = props;
 
   const [selected, setSelected] = useState<string[]>([]);
 

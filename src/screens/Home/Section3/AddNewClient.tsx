@@ -15,6 +15,7 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const clients = [
   {id: '1', name: 'Sophia Tran', hasAlert: false},
@@ -24,13 +25,13 @@ const clients = [
   {id: '5', name: 'Lily Evans', hasAlert: true},
 ];
 
-type AddNewClientScreenNavigationProp = NavigationProp<
+type AddNewClientScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
   'AddNewClientScreen'
 >;
 
-const AddNewClientScreen = () => {
-  const navigation = useNavigation<AddNewClientScreenNavigationProp>();
+const AddNewClientScreen = (props : AddNewClientScreenNavigationProp) => {
+  const {navigation} = props;
 
   const handleClientPress = (client: {id: string; name: string}) => {
     navigation.navigate('ViewClientCasesScreen', {

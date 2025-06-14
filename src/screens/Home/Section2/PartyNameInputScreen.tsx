@@ -21,6 +21,7 @@ import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SelectCourtModal from '../../../components/SelectCourtModal'; 
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -34,9 +35,9 @@ const scaleText = (pixelFontSize: number): number => {
   return Math.round(pixelFontSize * scaleFactor * 0.95);
 };
 
-type PartyNameInputScreenNavigationProp = NavigationProp<
+type PartyNameInputScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
-  'CaseInputScreen' 
+  'PartyNameInputScreen' 
 >;
 
 type CourtData = {
@@ -47,8 +48,8 @@ type CourtData = {
   district?: string | null;
 };
 
-const PartyNameInputScreen = () => {
-  const navigation = useNavigation<PartyNameInputScreenNavigationProp>();
+const PartyNameInputScreen = (props : PartyNameInputScreenNavigationProp) => {
+  const {navigation} = props;
   
   const [partyName, setPartyName] = useState('');
 

@@ -4,16 +4,16 @@
 import React, {useEffect} from 'react';
 import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '../../../stacks/HomeStack'; // Adjust path if needed
 
-type ProceedingDetailsSentScreenProp = NativeStackNavigationProp<
+type ProceedingDetailsSentScreenProp = NativeStackScreenProps<
   HomeStackParamList,
   'ProceedingDetailsSentScreen'
 >;
 
-const ProceedingDetailsSentScreen = () => {
-  const navigation = useNavigation<ProceedingDetailsSentScreenProp>();
+const ProceedingDetailsSentScreen = (props : ProceedingDetailsSentScreenProp) => {
+  const {navigation} = props;
 
   useEffect(() => {
     const timer = setTimeout(() => {

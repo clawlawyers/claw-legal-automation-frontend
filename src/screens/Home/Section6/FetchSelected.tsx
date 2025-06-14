@@ -16,7 +16,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 
 const cases = [
   {
@@ -33,13 +33,13 @@ const cases = [
   },
 ];
 
-type SendCaseDetailsScreenProp = NativeStackNavigationProp<
+type SendCaseDetailsScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'FetchSelectedScreen'
 >;
 
-const FetchSelectedScreen = () => {
-  const navigation = useNavigation<SendCaseDetailsScreenProp>();
+const FetchSelectedScreen = (props : SendCaseDetailsScreenProp) => {
+  const {navigation} = props;
   const [selectedCaseIndex, setSelectedCaseIndex] = useState<number | null>(
     null,
   );

@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
 
-type ScreenProp = NativeStackNavigationProp<
+type ScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'JudgementsFetched'
 >;
@@ -33,8 +33,8 @@ const courtOptions = [
   },
 ];
 
-const JudgementsFetched = () => {
-  const navigation = useNavigation<ScreenProp>();
+const JudgementsFetched = (props : ScreenProp) => {
+  const {navigation} = props;
   const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
 
   return (

@@ -5,9 +5,11 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type YourStackParamList = {
   SendInvoiceReminderScreen: undefined;
@@ -15,13 +17,13 @@ type YourStackParamList = {
   // ... other screens
 };
 
-type InvoiceReminderSentNavigationProp = NavigationProp<
+type InvoiceReminderSentNavigationProp = NativeStackScreenProps<
   YourStackParamList,
   'InvoiceReminderSentScreen'
 >;
 
-const InvoiceReminderSentScreen = () => {
-  const navigation = useNavigation<InvoiceReminderSentNavigationProp>();
+const InvoiceReminderSentScreen = (props : InvoiceReminderSentNavigationProp) => {
+  const {navigation} = props;
 
   useEffect(() => {
     // Set a timer for 3 seconds (3000 milliseconds)

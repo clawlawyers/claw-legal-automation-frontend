@@ -12,14 +12,15 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AccountStackParamList} from '../../../stacks/YourAccountStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type ContactAdminScreenProp = NavigationProp<
+type ContactAdminScreenProp = NativeStackScreenProps<
   AccountStackParamList,
   'YourAccountScreen'
 >;
 
-const ContactAdminScreen = () => {
-  const navigation = useNavigation<ContactAdminScreenProp>();
+const ContactAdminScreen = (props : ContactAdminScreenProp) => {
+  const {navigation} = props;
 
   return (
     <SafeAreaView

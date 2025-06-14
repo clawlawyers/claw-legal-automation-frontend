@@ -13,17 +13,17 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 
 const clients = ['Rahul Prajapati', 'Sophia Tran', 'David Kim', 'Emily Smith'];
 
-type SetReminderScreenProp = NativeStackNavigationProp<
+type SetReminderScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'SetReminderScreen'
 >;
 
-const SetReminderScreen = () => {
-  const navigation = useNavigation<SetReminderScreenProp>();
+const SetReminderScreen = (props : SetReminderScreenProp) => {
+  const {navigation} = props;
 
   const [selected, setSelected] = useState<string[]>([]);
 

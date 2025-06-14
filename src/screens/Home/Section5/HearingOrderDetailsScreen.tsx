@@ -11,6 +11,7 @@ import {
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type YourStackParamList = {
   HearingOrderDetailsScreen: undefined;
@@ -20,13 +21,13 @@ type YourStackParamList = {
   // ... other screens in your stack
 };
 
-type HearingOrderDetailsNavigationProp = NavigationProp<
+type HearingOrderDetailsNavigationProp = NativeStackScreenProps<
   YourStackParamList,
   'HearingOrderDetailsScreen'
 >;
 
-const HearingOrderDetailsScreen = () => {
-  const navigation = useNavigation<HearingOrderDetailsNavigationProp>();
+const HearingOrderDetailsScreen = (props : HearingOrderDetailsNavigationProp) => {
+  const {navigation} = props;
 
   // This handler is now only for buttons that don't navigate, like "Download".
   const handlePress = (action: string) => {

@@ -21,6 +21,7 @@ import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -36,13 +37,13 @@ const scaleText = (pixelFontSize: number): number => {
   return Math.round(pixelFontSize * scaleFactor * 0.95);
 };
 
-type CnrInputScreenNavigationProp = NavigationProp<
+type CnrInputScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
   'CnrInputScreen'
 >;
 
-const CnrInputScreen = () => {
-  const navigation = useNavigation<CnrInputScreenNavigationProp>();
+const CnrInputScreen = (props : CnrInputScreenNavigationProp) => {
+  const {navigation} = props;
   const [crnValue, setCrnValue] = useState('');
 
   const [caseType, setCaseType] = useState('');

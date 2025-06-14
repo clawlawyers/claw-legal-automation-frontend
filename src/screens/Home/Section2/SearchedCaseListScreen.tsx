@@ -16,6 +16,7 @@ import {
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {YourCasesStackParamList, CaseDetailsType} from '../../../stacks/YourCasesStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type CaseListItemType = {
   id: string;
@@ -24,13 +25,13 @@ type CaseListItemType = {
   case_details: string;
 };
 
-type SearchedCaseListScreenNavigationProp = NavigationProp<
+type SearchedCaseListScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
   'SearchedCaseListScreen'
 >;
 
-const SearchedCaseListScreen = () => {
-  const navigation = useNavigation<SearchedCaseListScreenNavigationProp>();
+const SearchedCaseListScreen = (props : SearchedCaseListScreenNavigationProp) => {
+  const {navigation} = props;
 
   // This would typically come from route params or an API call
   const casesData: CaseListItemType[] = [

@@ -14,6 +14,9 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  Modal,
+  FlatList,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
@@ -21,7 +24,9 @@ import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import SelectCourtModal from '../../../components/SelectCourtModal';
+import SelectCourtModal, {
+  type CourtData,
+} from '../../../components/SelectCourtModal';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -39,10 +44,64 @@ const scaleText = (pixelFontSize: number): number => {
 
 type CaseNumberInputScreenNavigationProp = NavigationProp<
   YourCasesStackParamList,
-  'CaseInputScreen'
+  'CaseNumberInputScreen'
 >;
 
-import CourtData from '../../../components/SelectCourtModal';
+// --- Dummy Data and Modal for Case Type Selection ---
+
+const DUMMY_CASE_TYPES = [
+  'Civil Suit',
+  'Criminal Case',
+  'Writ Petition',
+  'Special Leave Petition',
+  'First Appeal',
+  'Revision Petition',
+  'Contempt Petition',
+  'Execution Petition',
+];
+
+interface CaseTypeSelectionModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onSelect: (type: string) => void;
+  data: string[];
+}
+
+const CaseTypeSelectionModal: React.FC<CaseTypeSelectionModalProps> = ({
+  visible,
+  onClose,
+  onSelect,
+  data,
+}) => (
+  <Modal
+    animationType="fade"
+    transparent={true}
+    visible={visible}
+    onRequestClose={onClose}>
+    <TouchableWithoutFeedback onPress={onClose}>
+      <View style={styles.modalOverlay}>
+        <TouchableWithoutFeedback>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Case Type</Text>
+            <FlatList
+              data={data}
+              keyExtractor={item => item}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => onSelect(item)}>
+                  <Text style={styles.modalItemText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    </TouchableWithoutFeedback>
+  </Modal>
+);
+
+// --- Main Component ---
 
 const CaseNumberInputScreen = () => {
   const navigation = useNavigation<CaseNumberInputScreenNavigationProp>();
@@ -52,6 +111,7 @@ const CaseNumberInputScreen = () => {
 
   const [isCourtModalVisible, setCourtModalVisible] = useState(false);
   const [selectedCourt, setSelectedCourt] = useState<CourtData | null>(null);
+  const [isCaseTypeModalVisible, setCaseTypeModalVisible] = useState(false);
 
   const handleFetchCase = () => {
     if (!selectedCourt) {
@@ -62,11 +122,14 @@ const CaseNumberInputScreen = () => {
       });
       return;
     }
-    // --- (End of new validation) ---
-    // if (!caseType) {
-    //     Toast.show({type: 'error', text1: 'Input Required', text2: 'Please select a Case Type.'});
-    //     return;
-    // }
+    if (!caseType) {
+      Toast.show({
+        type: 'error',
+        text1: 'Input Required',
+        text2: 'Please select a Case Type.',
+      });
+      return;
+    }
     if (!caseNumber.trim()) {
       Toast.show({
         type: 'error',
@@ -94,8 +157,12 @@ const CaseNumberInputScreen = () => {
   };
 
   const openCaseTypePicker = () => {
-    Toast.show({type: 'info', text1: 'Action', text2: 'Open Case Type Picker'});
-    setCaseType(''); // Mock selection
+    setCaseTypeModalVisible(true);
+  };
+
+  const handleSelectCaseType = (selectedType: string) => {
+    setCaseType(selectedType);
+    setCaseTypeModalVisible(false);
   };
 
   const handleSaveCourt = (data: CourtData) => {
@@ -230,6 +297,13 @@ const CaseNumberInputScreen = () => {
           onClose={() => setCourtModalVisible(false)}
           onSave={handleSaveCourt}
         />
+
+        <CaseTypeSelectionModal
+          visible={isCaseTypeModalVisible}
+          onClose={() => setCaseTypeModalVisible(false)}
+          onSelect={handleSelectCaseType}
+          data={DUMMY_CASE_TYPES}
+        />
       </SafeAreaView>
     </LinearGradient>
   );
@@ -354,6 +428,40 @@ const styles = StyleSheet.create({
     fontFamily: 'SpaceGrotesk-Bold',
     fontSize: scaleText(16),
     color: 'white',
+  },
+  // --- Modal Styles ---
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#0A3A40',
+    width: getWidthPercentage(320),
+    maxHeight: getHeightPercentage(500),
+    borderRadius: 15,
+    padding: getWidthPercentage(20),
+    borderWidth: 1,
+    borderColor: '#01B779',
+  },
+  modalTitle: {
+    fontFamily: 'SpaceGrotesk-Bold',
+    fontSize: scaleText(18),
+    color: '#FFFFFF',
+    marginBottom: getHeightPercentage(15),
+    textAlign: 'center',
+  },
+  modalItem: {
+    paddingVertical: getHeightPercentage(12),
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  modalItemText: {
+    fontFamily: 'SpaceGrotesk-Medium',
+    fontSize: scaleText(16),
+    color: '#FFFFFF',
+    textAlign: 'left',
   },
 });
 

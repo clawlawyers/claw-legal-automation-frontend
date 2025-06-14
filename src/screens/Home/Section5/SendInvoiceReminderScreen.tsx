@@ -11,6 +11,7 @@ import {
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // Mock client data for demonstration
 const MOCK_CLIENTS = [
@@ -28,13 +29,13 @@ type YourStackParamList = {
   // ... other screens in your stack
 };
 
-type SendInvoiceReminderNavigationProp = NavigationProp<
+type SendInvoiceReminderNavigationProp = NativeStackScreenProps<
   YourStackParamList,
   'SendInvoiceReminderScreen'
 >;
 
-const SendInvoiceReminderScreen = () => {
-  const navigation = useNavigation<SendInvoiceReminderNavigationProp>();
+const SendInvoiceReminderScreen = (props : SendInvoiceReminderNavigationProp) => {
+  const {navigation} = props;
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
 
   const toggleClientSelection = (clientName: string) => {

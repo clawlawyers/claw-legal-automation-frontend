@@ -45,9 +45,9 @@ const GetCauseListScreen = (props : ScreenProp) => {
   const [districtDropdownOpen, setDistrictDropdownOpen] = useState(false);
 
   const dropdownData = {
-    states: ['Karnataka', 'Maharashtra', 'Delhi'],
-    cities: ['Bangalore', 'Mumbai', 'Delhi'],
-    districts: ['District 1', 'District 2', 'District 3'],
+    states: ['Karnataka', 'Maharashtra', 'Delhi', 'Tamil Nadu', 'West Bengal', 'Gujarat'],
+    cities: ['Bangalore', 'Mumbai', 'Delhi', 'Chennai', 'Kolkata', 'Ahmedabad', 'Hyderabad'],
+    districts: ['District 1', 'District 2', 'District 3', 'District 4', 'District 5', 'District 6'],
   };
 
   const renderDropdown = (

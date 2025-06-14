@@ -16,8 +16,9 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type MultipleTypesSearchScreenNavigationProp = NavigationProp<
+type MultipleTypesSearchScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
   'MultipleTypesSearchScreen'
 >;
@@ -45,8 +46,8 @@ const searchOptions = [
   {id: 'advocateBarCode', label: 'Advocate Bar Code'},
 ];
 
-const MultipleTypesSearchScreen = () => {
-  const navigation = useNavigation<MultipleTypesSearchScreenNavigationProp>();
+const MultipleTypesSearchScreen = (props : MultipleTypesSearchScreenNavigationProp) => {
+  const {navigation} = props;
   const [selectedSearchType, setSelectedSearchType] = useState<string | null>(
     null,
   );

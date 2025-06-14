@@ -21,6 +21,7 @@ import {YourCasesStackParamList} from '../../../stacks/YourCasesStack'; // Adjus
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SelectCourtModal from '../../../components/SelectCourtModal'; // Import the reusable modal
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -34,9 +35,9 @@ const scaleText = (pixelFontSize: number): number => {
   return Math.round(pixelFontSize * scaleFactor * 0.95);
 };
 
-type FilingNumberInputScreenNavigationProp = NavigationProp<
+type FilingNumberInputScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
-  'CaseInputScreen' 
+  'FilingNumberInputScreen' 
 >;
 
 type CourtData = {
@@ -47,8 +48,8 @@ type CourtData = {
   district?: string | null;
 };
 
-const FilingNumberInputScreen = () => {
-  const navigation = useNavigation<FilingNumberInputScreenNavigationProp>();
+const FilingNumberInputScreen = (props : FilingNumberInputScreenNavigationProp) => {
+  const {navigation} = props;
   
   // State for this screen's inputs
   const [filingNumber, setFilingNumber] = useState('');

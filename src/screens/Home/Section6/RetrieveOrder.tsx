@@ -5,15 +5,15 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 
-type AssociatedSetReminderScreenProp = NativeStackNavigationProp<
+type AssociatedSetReminderScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'RetrieveOrderScreen'
 >;
 
-const RetrieveOrderScreen = () => {
-  const navigation = useNavigation<AssociatedSetReminderScreenProp>();
+const RetrieveOrderScreen = (props : AssociatedSetReminderScreenProp) => {
+  const {navigation} = props;
 
   const caseFields = [
     {

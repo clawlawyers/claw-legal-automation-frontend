@@ -4,14 +4,15 @@ import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {HomeStackParamList} from '../../../stacks/HomeStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type CaseNotFoundScreenProp = NavigationProp<
+type CaseNotFoundScreenProp = NativeStackScreenProps<
   HomeStackParamList,
   'StartCaseSearch'
 >;
 
-const CaseNotFoundScreen = () => {
-  const navigation = useNavigation<CaseNotFoundScreenProp>();
+const CaseNotFoundScreen = (props : CaseNotFoundScreenProp) => {
+  const {navigation} = props;
 
   useEffect(() => {
     const timer = setTimeout(() => {

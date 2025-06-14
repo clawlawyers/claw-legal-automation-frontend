@@ -13,14 +13,15 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {HomeStackParamList} from '../../stacks/HomeStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type StartCaseSearchProp = NavigationProp<
+type StartCaseSearchProp = NativeStackScreenProps<
   HomeStackParamList,
   'StartCaseSearch'
 >;
 
-const StartCaseSearch = () => {
-  const navigation = useNavigation<StartCaseSearchProp>();
+const StartCaseSearch = (props : StartCaseSearchProp) => {
+  const {navigation} = props;
 
   const inputFields = [
     'Enter CRN Number',

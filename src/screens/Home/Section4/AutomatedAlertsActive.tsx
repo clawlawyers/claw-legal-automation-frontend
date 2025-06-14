@@ -4,16 +4,16 @@ import {View, Text, Image, Pressable, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
 
-type AutomatedAlertsActiveScreenProp = NativeStackNavigationProp<
+type AutomatedAlertsActiveScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'AutomatedAlertsActiveScreen'
 >;
 
-const AutomatedAlertsActiveScreen = () => {
-  const navigation = useNavigation<AutomatedAlertsActiveScreenProp>();
+const AutomatedAlertsActiveScreen = (props : AutomatedAlertsActiveScreenProp) => {
+  const {navigation} = props;
 
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">

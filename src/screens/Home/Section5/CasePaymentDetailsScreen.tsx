@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'; // Import useEffect and useRef
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -10,17 +10,22 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Modal,
+  FlatList,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
+// --- Updated PaymentEntry type with new options ---
+type PaymentType = 'Advance' | 'UPI' | 'Cheque' | 'Cash' | 'RTGS/NEFT';
 type PaymentEntry = {
   id: number;
   amount: string;
-  type: 'Advance' | 'Final' | 'Other';
+  type: PaymentType;
 };
+
 type YourStackParamList = {
   CasePaymentDetailsScreen: undefined;
   SelectClientScreen: undefined;
@@ -31,6 +36,52 @@ type CasePaymentDetailsNavigationProp = NavigationProp<
   'CasePaymentDetailsScreen'
 >;
 
+// --- Updated Dummy Data for Payment Type Selection ---
+const PAYMENT_TYPES: PaymentType[] = [
+  'Advance',
+  'UPI',
+  'Cheque',
+  'Cash',
+  'RTGS/NEFT',
+];
+
+const PaymentTypeModal = ({
+  visible,
+  onClose,
+  onSelect,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onSelect: (type: PaymentEntry['type']) => void;
+}) => (
+  <Modal
+    animationType="fade"
+    transparent={true}
+    visible={visible}
+    onRequestClose={onClose}>
+    <TouchableWithoutFeedback onPress={onClose}>
+      <View style={styles.modalOverlay}>
+        <TouchableWithoutFeedback>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Payment Type</Text>
+            <FlatList
+              data={PAYMENT_TYPES}
+              keyExtractor={item => item}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => onSelect(item)}>
+                  <Text style={styles.modalItemText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    </TouchableWithoutFeedback>
+  </Modal>
+);
+
 const CasePaymentDetailsScreen = () => {
   const navigation = useNavigation<CasePaymentDetailsNavigationProp>();
   const [payments, setPayments] = useState<PaymentEntry[]>([
@@ -38,10 +89,11 @@ const CasePaymentDetailsScreen = () => {
     {id: 2, amount: '15,000', type: 'Advance'},
   ]);
 
-  
   const initialPayments = useRef(JSON.stringify(payments));
 
- 
+  const [isTypeModalVisible, setTypeModalVisible] = useState(false);
+  const [editingPaymentId, setEditingPaymentId] = useState<number | null>(null);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       const hasUnsavedChanges =
@@ -51,10 +103,8 @@ const CasePaymentDetailsScreen = () => {
         return;
       }
 
-      
       e.preventDefault();
 
-      
       Alert.alert(
         'Unsaved Changes',
         'You have unsaved changes. Are you sure you want to leave?',
@@ -63,15 +113,14 @@ const CasePaymentDetailsScreen = () => {
           {
             text: 'Discard',
             style: 'destructive',
-            // If the user discards, dispatch the original back action
             onPress: () => navigation.dispatch(e.data.action),
           },
           {
             text: 'Save & Leave',
             style: 'default',
             onPress: () => {
-              handleUpdatePayment(false); 
-              navigation.dispatch(e.data.action); 
+              handleUpdatePayment(false);
+              navigation.dispatch(e.data.action);
             },
           },
         ],
@@ -85,7 +134,7 @@ const CasePaymentDetailsScreen = () => {
     const newPayment: PaymentEntry = {
       id: Date.now(),
       amount: '',
-      type: 'Advance',
+      type: 'Advance', // Default type for new entries
     };
     setPayments(prevPayments => [...prevPayments, newPayment]);
   };
@@ -97,16 +146,22 @@ const CasePaymentDetailsScreen = () => {
   };
 
   const handleTypeChange = (id: number) => {
-    Alert.alert(
-      'Change Payment Type',
-      `Logic to open a picker for item ${id} would go here.`,
-    );
+    setEditingPaymentId(id);
+    setTypeModalVisible(true);
+  };
+
+  const handleSelectType = (type: PaymentEntry['type']) => {
+    if (editingPaymentId) {
+      setPayments(prevPayments =>
+        prevPayments.map(p => (p.id === editingPaymentId ? {...p, type} : p)),
+      );
+    }
+    setTypeModalVisible(false);
+    setEditingPaymentId(null);
   };
 
   const handleUpdatePayment = (showAlert = true) => {
     console.log('Saving payments:', JSON.stringify(payments, null, 2));
-
-    // Update the initial state ref to the new saved state
     initialPayments.current = JSON.stringify(payments);
 
     if (showAlert) {
@@ -200,7 +255,9 @@ const CasePaymentDetailsScreen = () => {
 
         {/* Footer Buttons */}
         <View style={styles.footer}>
-          <TouchableOpacity style={{flex: 1}} onPress={() => handleUpdatePayment()}>
+          <TouchableOpacity
+            style={{flex: 1}}
+            onPress={() => handleUpdatePayment()}>
             <LinearGradient
               colors={['#01B779', '#008C68']}
               style={styles.footerButton}>
@@ -218,6 +275,12 @@ const CasePaymentDetailsScreen = () => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
+
+        <PaymentTypeModal
+          visible={isTypeModalVisible}
+          onClose={() => setTypeModalVisible(false)}
+          onSelect={handleSelectType}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -306,7 +369,8 @@ const styles = StyleSheet.create({
   inputGradient: {
     borderRadius: 12,
     padding: 1,
-    flex: 0.6,
+    flex: 1,
+    marginRight: 10,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -328,12 +392,13 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 12,
     paddingHorizontal: 12,
-    flex: 0.35,
+    minWidth: 130,
   },
   typeText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '500',
+    marginRight: 4,
   },
   addPaymentButton: {
     flexDirection: 'row',
@@ -370,6 +435,39 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  // --- Modal Styles ---
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#0A3A40',
+    width: '80%',
+    borderRadius: 15,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#01B779',
+  },
+  modalTitle: {
+    // Using a system font for better compatibility if SpaceGrotesk isn't loaded everywhere
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 

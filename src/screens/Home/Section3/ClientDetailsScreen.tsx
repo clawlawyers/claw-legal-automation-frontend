@@ -12,20 +12,20 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '../../../stacks/HomeStack';
 import { YourCasesStackParamList } from '../../../stacks/YourCasesStack';
 import HomeStackNavigator from '../../../stacks/Home';
 
-type AddClientScreenProp = NativeStackNavigationProp<
+type AddClientScreenProp = NativeStackScreenProps<
   YourCasesStackParamList,
   'ClientDetailsScreen'
 >;
 
 
 
-const ClientDetailsScreen = () => {
-  const navigation = useNavigation<AddClientScreenProp>();
+const ClientDetailsScreen = (props : AddClientScreenProp) => {
+  const {navigation} = props;
 
   // const AddClientScreen = () => {
   //   const navigation = useNavigation();

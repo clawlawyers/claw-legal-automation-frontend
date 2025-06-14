@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // For X icon
 import LinearGradient from 'react-native-linear-gradient';
 import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
-import {NativeStackNavigationProp, } from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps, } from '@react-navigation/native-stack';
 import SendCaseDetailsScreen from '../Section5/SendCaseDetails';
 
 type AssociateClientCaseScreenRouteProp = RouteProp<
@@ -24,13 +24,13 @@ type AssociateClientCaseScreenRouteProp = RouteProp<
   'AssociateClientCaseScreen'
 >;
 
-type AssociateClientCaseScreenNavigationProp = NativeStackNavigationProp<
+type AssociateClientCaseScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
   'AssociateClientCaseScreen'
 >;
 
-const AssociateClientCaseScreen = () => {
-  const navigation = useNavigation<AssociateClientCaseScreenNavigationProp>();
+const AssociateClientCaseScreen = (props : AssociateClientCaseScreenNavigationProp) => {
+  const {navigation} = props;
   const route = useRoute<AssociateClientCaseScreenRouteProp>();
   const [isModalVisible, setIsModalVisible] = useState(false); 
 

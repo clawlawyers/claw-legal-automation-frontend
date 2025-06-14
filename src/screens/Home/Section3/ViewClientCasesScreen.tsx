@@ -19,6 +19,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type CaseItemType = {
   clawId: string;
@@ -41,13 +42,13 @@ const cases: CaseItemType[] = [
   },
 ];
 
-type ViewClientCasesScreenNavigationProp = NavigationProp<
+type ViewClientCasesScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
   'ViewClientCasesScreen'
 >;
 
-const ViewClientCasesScreen = () => {
-  const navigation = useNavigation<ViewClientCasesScreenNavigationProp>();
+const ViewClientCasesScreen = (props : ViewClientCasesScreenNavigationProp) => {
+  const {navigation} = props;
   const [searchText, setSearchText] = useState('');
   const [selectedParameter, setSelectedParameter] = useState<string | null>(
     null,

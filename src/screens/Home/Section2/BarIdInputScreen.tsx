@@ -21,6 +21,7 @@ import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SelectCourtModal from '../../../components/SelectCourtModal'; 
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -34,9 +35,9 @@ const scaleText = (pixelFontSize: number): number => {
   return Math.round(pixelFontSize * scaleFactor * 0.95);
 };
 
-type BarIdInputScreenNavigationProp = NavigationProp<
+type BarIdInputScreenNavigationProp = NativeStackScreenProps<
   YourCasesStackParamList,
-  'CaseInputScreen' 
+  'BarIdInputScreen' 
 >;
 
 type CourtData = {
@@ -47,8 +48,8 @@ type CourtData = {
   district?: string | null;
 };
 
-const BarIdInputScreen = () => {
-  const navigation = useNavigation<BarIdInputScreenNavigationProp>();
+const BarIdInputScreen = (props : BarIdInputScreenNavigationProp) => {
+  const {navigation} = props;
   
   const [barId, setBarId] = useState('');
 

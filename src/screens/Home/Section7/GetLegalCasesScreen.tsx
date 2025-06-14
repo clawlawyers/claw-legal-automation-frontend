@@ -11,7 +11,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  Pressable, // Import Pressable
+  Pressable,
+  Modal, // Import Modal
+  FlatList, // Import FlatList
+  TouchableWithoutFeedback, // Import TouchableWithoutFeedback
 } from 'react-native';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,15 +25,62 @@ const openDatePicker = (
   setter: React.Dispatch<React.SetStateAction<string | null>>,
 ) => {
   console.log('Opening date picker...');
-  setter('25/08/2023');
+  setter('25/08/2023'); // Mock selection
 };
 
-const openCourtPicker = (
-  setter: React.Dispatch<React.SetStateAction<string | null>>,
-) => {
-  console.log('Opening court picker...');
-  setter('Supreme Court');
-};
+// --- Dummy Data and Modal for Court Selection ---
+const DUMMY_COURTS = [
+  'Supreme Court of India',
+  'High Court of Delhi',
+  'High Court of Bombay',
+  'High Court of Madras',
+  'High Court of Calcutta',
+  'High Court of Allahabad',
+  'National Company Law Tribunal (NCLT)',
+  'National Green Tribunal (NGT)',
+];
+
+const SelectionModal = ({
+  visible,
+  onClose,
+  data,
+  onSelect,
+  title,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  data: string[];
+  onSelect: (item: string) => void;
+  title: string;
+}) => (
+  <Modal
+    animationType="fade"
+    transparent={true}
+    visible={visible}
+    onRequestClose={onClose}>
+    <TouchableWithoutFeedback onPress={onClose}>
+      <View style={styles.modalOverlay}>
+        <TouchableWithoutFeedback>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{title}</Text>
+            <FlatList
+              data={data}
+              keyExtractor={item => item}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => onSelect(item)}>
+                  <Text style={styles.modalItemText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    </TouchableWithoutFeedback>
+  </Modal>
+);
+// --- End of Modal Component ---
 
 type RootStackParamList = {
   GetLegalCasesScreen: undefined;
@@ -44,6 +94,9 @@ const GetLegalCasesScreen = () => {
   const [endDate, setEndDate] = useState<string | null>(null);
   const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
 
+  // State for court selection modal
+  const [isCourtModalVisible, setCourtModalVisible] = useState(false);
+
   const handleSearch = () => {
     navigation.navigate('CaseResultsScreen');
     console.log({
@@ -52,6 +105,11 @@ const GetLegalCasesScreen = () => {
       endDate,
       selectedCourt,
     });
+  };
+
+  const handleSelectCourt = (court: string) => {
+    setSelectedCourt(court);
+    setCourtModalVisible(false);
   };
 
   const renderInputBox = (
@@ -93,7 +151,6 @@ const GetLegalCasesScreen = () => {
             onPress={() => navigation.goBack()}
             style={styles.backButton}>
             <Image
-              // Assuming the path is correct as per other screens
               source={require('../../../assets/icons/back.png')}
               style={styles.backButtonImage}
               resizeMode="contain"
@@ -151,7 +208,7 @@ const GetLegalCasesScreen = () => {
             {renderInputBox(
               'Select Court',
               selectedCourt,
-              () => openCourtPicker(setSelectedCourt),
+              () => setCourtModalVisible(true), // Opens the modal
               'chevron-down',
             )}
           </View>
@@ -166,6 +223,14 @@ const GetLegalCasesScreen = () => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
+
+        <SelectionModal
+          visible={isCourtModalVisible}
+          onClose={() => setCourtModalVisible(false)}
+          data={DUMMY_COURTS}
+          onSelect={handleSelectCourt}
+          title="Select Court"
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -284,6 +349,39 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  // --- Modal Styles ---
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#0A3A40',
+    width: '85%',
+    maxHeight: '60%',
+    borderRadius: 15,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#01B779',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'left',
   },
 });
 

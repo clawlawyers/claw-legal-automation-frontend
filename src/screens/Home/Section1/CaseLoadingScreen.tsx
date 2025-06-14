@@ -7,9 +7,9 @@ import {View, Text, Animated, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import {HomeStackParamList} from '../../../stacks/HomeStack';
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 
-type CaseLoadingNavigationProp = NativeStackNavigationProp<
+type CaseLoadingNavigationProp = NativeStackScreenProps<
   HomeStackParamList,
   'CaseLoadingScreen'
 >;
@@ -19,8 +19,8 @@ type CaseLoadingScreenRouteProp = RouteProp<
   'CaseLoadingScreen'
 >;
 
-const CaseLoadingScreen = () => {
-  const navigation = useNavigation<CaseLoadingNavigationProp>();
+const CaseLoadingScreen = (props : CaseLoadingNavigationProp) => {
+  const {navigation} = props;
   const route = useRoute<CaseLoadingScreenRouteProp>();
   const blinkOpacity = useRef(new Animated.Value(1)).current;
 

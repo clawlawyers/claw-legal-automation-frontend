@@ -12,17 +12,17 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {HomeStackParamList} from '../../../stacks/HomeStack';
 
-type CaseDetailsDownloadScreenProp = NativeStackNavigationProp<
+type CaseDetailsDownloadScreenProp = NativeStackScreenProps<
   HomeStackParamList,
   'CaseDetailsDownloadScreen'
 >;
 
-const CaseDetailsDownloadScreen = () => {
-  const navigation = useNavigation<CaseDetailsDownloadScreenProp>();
+const CaseDetailsDownloadScreen = (props : CaseDetailsDownloadScreenProp) => {
+  const {navigation} = props;
   const [modalVisible, setModalVisible] = useState(false);
   const [clientName, setClientName] = useState('');
 

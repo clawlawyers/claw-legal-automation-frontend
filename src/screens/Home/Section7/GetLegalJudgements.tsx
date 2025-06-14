@@ -45,9 +45,9 @@ const GetLegalJudgements = (props : ScreenProp) => {
   // const [districtDropdownOpen, setDistrictDropdownOpen] = useState(false);
 
   const dropdownData = {
-    states: ['Karnataka', 'Maharashtra', 'Delhi'],
-    cities: ['Bangalore', 'Mumbai', 'Delhi'],
-    districts: ['District 1', 'District 2', 'District 3'],
+    states: ['Karnataka', 'Maharashtra', 'Delhi', 'Kolkata', 'Tamil Nadu', 'Gujarat', 'Rajasthan', 'Andhra Pradesh', 'Telangana', 'Uttar Pradesh'],
+    cities: ['Bangalore', 'Mumbai','Kolkata', 'Tamil Nadu', 'Gujarat', 'Rajasthan', 'Andhra Pradesh', 'Telangana', 'Uttar Pradesh'],
+    districts: ['District 1', 'District 2', 'District 3', 'District 4', 'District 5', 'District 6', 'District 7', 'District 8', 'District 9', 'District 10'],
   };
 
   const renderDropdown = (

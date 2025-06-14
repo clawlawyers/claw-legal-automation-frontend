@@ -11,6 +11,7 @@ import {
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // Mock client data
 const MOCK_CLIENTS = [
@@ -28,13 +29,13 @@ type YourStackParamList = {
   // ... other screens
 };
 
-type SelectClientsScreenNavigationProp = NavigationProp<
+type SelectClientsScreenNavigationProp = NativeStackScreenProps<
   YourStackParamList,
   'SelectClientsScreen'
 >;
 
-const SelectClientsScreen = () => {
-  const navigation = useNavigation<SelectClientsScreenNavigationProp>();
+const SelectClientsScreen = (props : SelectClientsScreenNavigationProp) => {
+  const {navigation} = props;
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
 
   const toggleClientSelection = (clientName: string) => {

@@ -15,6 +15,7 @@ import {
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 
 type YourStackParamList = {
@@ -24,13 +25,13 @@ type YourStackParamList = {
   // ... other screens
 };
 
-type SendHearingMessageNavigationProp = NavigationProp<
+type SendHearingMessageNavigationProp = NativeStackScreenProps<
   YourStackParamList,
   'SendHearingMessageScreen'
 >;
 
-const SendHearingMessageScreen = () => {
-  const navigation = useNavigation<SendHearingMessageNavigationProp>();
+const SendHearingMessageScreen = (props : SendHearingMessageNavigationProp) => {
+  const {navigation} = props;
   const [message, setMessage] = React.useState('');
   const [aiMessage, setAiMessage] = React.useState('');
 

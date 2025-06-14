@@ -3,17 +3,17 @@
 import React from 'react';
 import {View, Text, Image, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import type {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-type CauseFetchSuccessScreenProp = NativeStackNavigationProp<
+type CauseFetchSuccessScreenProp = NativeStackScreenProps<
   YourAlertsStackParamList,
   'CauseFetchSuccessScreen'
 >;
 
-const CauseFetchSuccessScreen = () => {
-  const navigation = useNavigation<CauseFetchSuccessScreenProp>();
+const CauseFetchSuccessScreen = (props : CauseFetchSuccessScreenProp) => {
+  const {navigation} = props;
 
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">
