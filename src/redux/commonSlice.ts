@@ -1,21 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {company} from './authSlice';
+import {CaseDetailsType} from '../stacks/YourCasesStack';
 
-// Define the Auth state interface.
-interface AuthState {
-  activeFirm: company | null;
-  selectedFileData: any | null;
-  inventoryName: string | null;
-  error?: string;
-  // Optional: you can store additional properties from your API
-  props?: any;
-}
-
-// Set the initial state.
-const initialState: AuthState = {
-  activeFirm: null,
-  selectedFileData: null,
-  inventoryName: null,
+const initialState = {
+  caseList: [] as CaseDetailsType[],
 };
 
 const authSlice = createSlice({
@@ -23,19 +10,12 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     // Login reducer: sets user and saves auth info to AsyncStorage.
-    setActiveFirm: (state, action: PayloadAction<company>) => {
-      state.activeFirm = action.payload;
+    setCases: (state, action: PayloadAction<CaseDetailsType>) => {
+      state.caseList = action.payload;
       console.log(action.payload);
-    },
-    setSelectedFileData: (state, action: PayloadAction<any>) => {
-      state.selectedFileData = action.payload;
-    },
-    setInventoryName: (state, action: PayloadAction<string>) => {
-      state.inventoryName = action.payload;
     },
   },
 });
 
-export const {setActiveFirm, setSelectedFileData, setInventoryName} =
-  authSlice.actions;
+export const {setCases} = authSlice.actions;
 export default authSlice.reducer;

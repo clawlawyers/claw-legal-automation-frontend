@@ -13,13 +13,13 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {YourCasesStackParamList} from '../../../stacks/YourCasesStack'; 
+import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type MultipleTypesSearchScreenNavigationProp = NavigationProp<
   YourCasesStackParamList,
-  'MultipleTypesSearchScreen' 
+  'MultipleTypesSearchScreen'
 >;
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
@@ -27,8 +27,10 @@ const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 const REFERENCE_DESIGN_WIDTH = 393;
 const REFERENCE_DESIGN_HEIGHT = 852;
 
-const getWidthPercentage = (pixelWidth: number) => (pixelWidth / REFERENCE_DESIGN_WIDTH) * screenWidth;
-const getHeightPercentage = (pixelHeight: number) => (pixelHeight / REFERENCE_DESIGN_HEIGHT) * screenHeight;
+const getWidthPercentage = (pixelWidth: number) =>
+  (pixelWidth / REFERENCE_DESIGN_WIDTH) * screenWidth;
+const getHeightPercentage = (pixelHeight: number) =>
+  (pixelHeight / REFERENCE_DESIGN_HEIGHT) * screenHeight;
 const scaleText = (pixelFontSize: number) => {
   const scaleFactor = screenWidth / REFERENCE_DESIGN_WIDTH;
   return Math.round(pixelFontSize * scaleFactor * 0.95);
@@ -45,7 +47,9 @@ const searchOptions = [
 
 const MultipleTypesSearchScreen = () => {
   const navigation = useNavigation<MultipleTypesSearchScreenNavigationProp>();
-  const [selectedSearchType, setSelectedSearchType] = useState<string | null>(null);
+  const [selectedSearchType, setSelectedSearchType] = useState<string | null>(
+    null,
+  );
 
   const handleContinueAction = () => {
     if (!selectedSearchType) {
@@ -58,7 +62,7 @@ const MultipleTypesSearchScreen = () => {
       });
       return;
     }
-    
+
     if (selectedSearchType === 'cnr') {
       navigation.navigate('CnrInputScreen');
     } else if (selectedSearchType === 'case') {
@@ -79,63 +83,83 @@ const MultipleTypesSearchScreen = () => {
       colors={['#0A3A40', '#083035']}
       style={styles.mainGradientContainer}>
       <SafeAreaView style={styles.contentSafeArea}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="arrow-left" size={scaleText(24)} color="#01B779" />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <Icon name="arrow-left" size={scaleText(24)} color="#01B779" />
         </TouchableOpacity>
-        
-        <ScrollView 
-            style={{flex: 1}}
-            contentContainerStyle={styles.scrollContentContainer}
-            showsVerticalScrollIndicator={false}
-        >
-            <Image
-              source={require('../../../assets/casesearch.png')}
-              style={styles.searchIconImage}
-              resizeMode="contain"
-            />
 
-            <Text style={styles.mainTitle}>Find a Case Instantly</Text>
-            <Text style={styles.subInstructionText}>
-              Fill In Max Number Of Fields To Get Better Results Quickly
-            </Text>
+        <ScrollView
+          style={{flex: 1}}
+          contentContainerStyle={styles.scrollContentContainer}
+          showsVerticalScrollIndicator={false}>
+          <Image
+            source={require('../../../assets/casesearch.png')}
+            style={styles.searchIconImage}
+            resizeMode="contain"
+          />
 
-            <View style={styles.optionsWrapper}>
-              {searchOptions.map(option => (
-                <TouchableOpacity
-                  key={option.id}
-                  style={styles.selectableOptionButton}
-                  onPress={() => setSelectedSearchType(option.id)}>
-                  
-                    <View style={[
-                        styles.selectableOptionInner, 
-                        {borderColor: selectedSearchType === option.id ? '#01B779' : 'rgba(1, 183, 121, 0.5)'} 
+          <Text style={styles.mainTitle}>Find a Case Instantly</Text>
+          <Text style={styles.subInstructionText}>
+            Fill In Max Number Of Fields To Get Better Results Quickly
+          </Text>
+
+          <View style={styles.optionsWrapper}>
+            {searchOptions.map(option => (
+              <TouchableOpacity
+                key={option.id}
+                style={styles.selectableOptionButton}
+                onPress={() => setSelectedSearchType(option.id)}>
+                <View
+                  style={[
+                    styles.selectableOptionInner,
+                    {
+                      borderColor:
+                        selectedSearchType === option.id
+                          ? '#01B779'
+                          : 'rgba(1, 183, 121, 0.5)',
+                    },
+                  ]}>
+                  <View
+                    style={[
+                      styles.radioOuterCircle,
+                      {
+                        borderColor:
+                          selectedSearchType === option.id
+                            ? '#01B779'
+                            : 'rgba(255, 255, 255, 0.7)',
+                      },
                     ]}>
-                        <View style={[
-                            styles.radioOuterCircle,
-                            {borderColor: selectedSearchType === option.id ? '#01B779' : 'rgba(255, 255, 255, 0.7)'}
-                        ]}>
-                        {selectedSearchType === option.id && (
-                            <View style={styles.radioInnerSelected} />
-                        )}
-                        </View>
-                        <Text style={[styles.optionLabelText, selectedSearchType === option.id && styles.optionLabelTextSelected]}>
-                            {option.label}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-              ))}
-            </View>
+                    {selectedSearchType === option.id && (
+                      <View style={styles.radioInnerSelected} />
+                    )}
+                  </View>
+                  <Text
+                    style={[
+                      styles.optionLabelText,
+                      selectedSearchType === option.id &&
+                        styles.optionLabelTextSelected,
+                    ]}>
+                    {option.label}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         </ScrollView>
-        
+
         <View style={styles.bottomContainer}>
-            <TouchableOpacity onPress={handleContinueAction} style={styles.primaryActionButtonWrapper}>
-              <LinearGradient
-                colors={['#01B779', '#008C68']}
-                start={{x: 0, y: 0.5}} end={{x: 1, y: 0.5}}
-                style={styles.primaryActionButtonGradient}>
-                <Text style={styles.primaryActionButtonLabel}>Continue</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleContinueAction}
+            style={styles.primaryActionButtonWrapper}>
+            <LinearGradient
+              colors={['#01B779', '#008C68']}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              style={styles.primaryActionButtonGradient}>
+              <Text style={styles.primaryActionButtonLabel}>Continue</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -153,19 +177,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: getHeightPercentage(50),
     left: getWidthPercentage(20),
-    zIndex: 10, 
+    zIndex: 10,
     padding: 10,
   },
   scrollContentContainer: {
     paddingHorizontal: getWidthPercentage(32),
-    paddingTop: getHeightPercentage(40), 
+    paddingTop: getHeightPercentage(40),
     paddingBottom: getHeightPercentage(20),
   },
   searchIconImage: {
     width: getWidthPercentage(188),
     height: getWidthPercentage(188),
     alignSelf: 'center',
-    marginTop: getHeightPercentage(53), 
+    marginTop: getHeightPercentage(53),
   },
   mainTitle: {
     fontFamily: 'SpaceGrotesk-Bold',
@@ -195,7 +219,7 @@ const styles = StyleSheet.create({
     height: getHeightPercentage(48),
     borderRadius: 10,
     marginBottom: getHeightPercentage(15),
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   selectableOptionInner: {
     height: '100%',
@@ -235,7 +259,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: getWidthPercentage(32),
     paddingBottom: getHeightPercentage(30),
     paddingTop: getHeightPercentage(10),
-    backgroundColor: '#083035' 
+    backgroundColor: '#083035',
   },
   primaryActionButtonWrapper: {
     width: '100%',

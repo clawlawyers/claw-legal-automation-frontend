@@ -1,7 +1,7 @@
 // src/screens/Home/Section2/YourCasesListScreen.tsx
 /* eslint-disable react-native/no-inline-styles */
 import {RootTabParamList} from '../../../navigation/types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,97 +12,149 @@ import {
   Platform,
   StatusBar,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Dropdown} from 'react-native-element-dropdown';
 import LinearGradient from 'react-native-linear-gradient';
-import {YourCasesStackParamList, CaseDetailsType} from '../../../stacks/YourCasesStack';
-import { HomeStackParamList } from '../../../stacks/Home';
-import { YourAlertsStackParamList } from '../../../stacks/YourAlertsStack';
+import {
+  YourCasesStackParamList,
+  CaseDetailsType,
+} from '../../../stacks/YourCasesStack';
+import {HomeStackParamList} from '../../../stacks/Home';
+import {YourAlertsStackParamList} from '../../../stacks/YourAlertsStack';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
+import {setCases} from '../../../redux/commonSlice';
+import {NODE_API_ENDPOINT} from '../../../utils/util';
+import NoCasesAdded from './NoCasesAdded';
 
-type CaseListItemType = {
-  id: string;
-  claw_case_id: string;
-  crn_no: string;
-  case_details: string;
-};
+type YourCasesListScreenNavigationProp = NativeStackScreenProps<
+  YourCasesStackParamList,
+  'YourCasesListScreen'
+>;
 
-type YourCasesListScreenNavigationProp = NavigationProp<
-YourCasesStackParamList,
- 'YourCasesListScreen'
- >;
-
-const YourCasesListScreen = () => {
-  const navigation = useNavigation<YourCasesListScreenNavigationProp>();
+const YourCasesListScreen = ({
+  navigation,
+}: YourCasesListScreenNavigationProp) => {
+  // const navigation = useNavigation<YourCasesListScreenNavigationProp>();
 
   const [selectedParameter, setSelectedParameter] = useState<string | null>(
     null,
   );
   const [searchText, setSearchText] = useState('');
 
-  const parameterOptions = [
-    {label: 'Claw Case ID', value: 'claw_case_id'},
-    {label: 'CRN No', value: 'crn_no'},
-    {label: 'Case Details', value: 'case_details'},
-  ];
+  const [loading, setLoading] = useState(true);
+  const [caseLists, setCaseLists] = useState<CaseDetailsType[]>([]);
+  const [filterCase, setFilterCase] = useState<CaseDetailsType[]>([]);
 
-  const casesData: CaseListItemType[] = [
-    {
-      id: '29',
-      claw_case_id: 'CL00023',
-      crn_no: 'WB071256987586742007',
-      case_details:
-        'Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator',
-    },
-    {
-      id: '30',
-      claw_case_id: 'CL00024',
-      crn_no: 'WB071256987586742008',
-      case_details:
-        'Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator',
-    },
-    {
-      id: '290',
-      claw_case_id: 'CL00044',
-      crn_no: 'WB071256987586742007',
-      case_details:
-        'Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator',
-    },
-    {
-      id: '300',
-      claw_case_id: 'CL00090',
-      crn_no: 'WB071256987586742008',
-      case_details:
-        'Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator',
-    },
-    {
-      id: '31',
-      claw_case_id: 'CL00025',
-      crn_no: 'WB071256987586742009',
-      case_details:
-        'Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator',
-    },
-  ];
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
 
-  const filteredCases = casesData.filter(item => {
-    if (!selectedParameter || !searchText.trim()) return true;
-    const key = selectedParameter as keyof CaseListItemType;
-    if (item.hasOwnProperty(key) && typeof item[key] === 'string') {
-        return (item[key] as string).toLowerCase().includes(searchText.trim().toLowerCase());
+  console.log(caseLists);
+
+  useEffect(() => {
+    const getCase = async () => {
+      if (!currentUser?.token) {
+        console.error('No user token found');
+        return;
+      }
+      setLoading(true);
+      const caseList = await fetch(`${NODE_API_ENDPOINT}/case/getCases/user`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser?.token}`,
+        },
+      });
+      if (!caseList.ok) {
+        console.error('Failed to fetch cases:', caseList.statusText);
+        setLoading(false);
+        throw new Error('Failed to fetch cases');
+      }
+      setLoading(false);
+      const data = await caseList.json();
+      console.log(data);
+      setCaseLists(data.cases);
+      setFilterCase(data.cases);
+      dispatch(setCases(data.cases));
+    };
+    if (currentUser?.token) {
+      getCase().catch(error => {
+        console.error('Error fetching cases:', error);
+      });
+      setLoading(false);
     }
-    return false;
-  });
+  }, [currentUser?.token, dispatch]);
+
+  console.log(loading);
+
+  // useEffect(() => {
+  //   if (searchText.trim() === '') {
+  //     setFilterCase(caseLists);
+  //   } else {
+  //     const filteredCases = caseLists.filter(item => {
+  //       if (!selectedParameter) return true;
+  //       const key = selectedParameter as keyof CaseDetailsType;
+  //       if (item.hasOwnProperty(key) && typeof item[key] === 'string') {
+  //         return (item[key] as string)
+  //           .toLowerCase()
+  //           .includes(searchText.trim().toLowerCase());
+  //       }
+  //       return false;
+  //     });
+  //     setFilterCase(filteredCases);
+  //   }
+  // }, [searchText, selectedParameter, caseLists]);
+
+  useEffect(() => {
+    if (searchText.trim() === '') {
+      setFilterCase(caseLists);
+    } else {
+      const filtered = caseLists.filter(item => {
+        if (!selectedParameter) return true;
+
+        const nested = (item.case as any)[selectedParameter];
+        if (typeof nested === 'string') {
+          return nested.toLowerCase().includes(searchText.trim().toLowerCase());
+        }
+        return false;
+      });
+      setFilterCase(filtered);
+    }
+  }, [searchText, selectedParameter, caseLists]);
+
+  const parameterOptions = [
+    {label: 'Claw Case ID', value: 'clawCaseId'},
+    {label: 'CRN No', value: 'crnNum'},
+    {label: 'Case Type', value: 'caseType'},
+  ];
+
+  // const filteredCases = caseLists?.filter(item => {
+  //   if (!selectedParameter || !searchText.trim()) {
+  //     return true;
+  //   }
+  //   const key = selectedParameter as keyof CaseListItemType;
+  //   if (item.hasOwnProperty(key) && typeof item[key] === 'string') {
+  //     return (item[key] as string)
+  //       .toLowerCase()
+  //       .includes(searchText.trim().toLowerCase());
+  //   }
+  //   return false;
+  // });
+
+  // console.log(filteredCases);
 
   const handleCaseItemPress = (item: CaseListItemType) => {
     console.log('Navigating to associate client for case:', item.claw_case_id);
     const caseDetailsToPass: CaseDetailsType = {
-        id: item.id,
-        clawId: item.claw_case_id,
-        crn: item.crn_no,
-        details: item.case_details,
-        
+      id: item.id,
+      clawId: item.claw_case_id,
+      crn: item.crn_no,
+      details: item.case_details,
     };
 
     navigation.navigate('AssociateClientCaseScreen', {
@@ -113,15 +165,31 @@ const YourCasesListScreen = () => {
 
   const handleAddCasesPress = () => {
     navigation.navigate('MultipleTypesSearchScreen');
-    console.log("Add Cases pressed, navigating to SelectCourtScreen");
+    console.log('Add Cases pressed, navigating to SelectCourtScreen');
   };
 
   // --- ADDED --- Function handler for the new button
   const handleViewFirmCases = () => {
-    console.log("View Firm Cases pressed. Implement navigation here.");
+    console.log('View Firm Cases pressed. Implement navigation here.');
     // Example navigation: navigation.navigate('FirmCasesScreen');
   };
-
+  if (loading) {
+    return (
+      <SafeAreaView
+        className="flex-1 bg-[#062C2D] px-5 pb-5"
+        style={{
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        }}>
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#01B779" />
+          <Text className="text-white mt-4">Loading cases...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  } else if (caseLists.length === 0) {
+    navigation.replace('NoCasesAdded');
+    return;
+  }
 
   return (
     <SafeAreaView
@@ -132,29 +200,30 @@ const YourCasesListScreen = () => {
       {/* --- MODIFIED --- Added justify-between, items-center, and top margin */}
       <View className="flex-row items-center justify-between mt-4">
         <View className="flex-row items-center">
-            <Pressable
+          <Pressable
             onPress={() => navigation.goBack()}
             className="w-10 h-10 justify-center items-center rounded-full border border-[#01B779]">
             <Icon name="arrow-left" size={20} color="#01B779" />
-            </Pressable>
-            <View className="ml-3">
-            <Text className="text-white font-spacegrotesk text-xs">Viewing</Text>
-            <Text
-                style={{fontFamily: 'SpaceGrotesk-Bold'}}
-                className="text-white text-base">
-                Your Cases
+          </Pressable>
+          <View className="ml-3">
+            <Text className="text-white font-spacegrotesk text-xs">
+              Viewing
             </Text>
-            </View>
+            <Text
+              style={{fontFamily: 'SpaceGrotesk-Bold'}}
+              className="text-white text-base">
+              Your Cases
+            </Text>
+          </View>
         </View>
 
         {/* --- ADDED --- New button on the right */}
         <TouchableOpacity onPress={handleViewFirmCases}>
-            <Text 
-                style={{fontFamily: 'SpaceGrotesk-Bold'}}
-                className="text-[#01B779] text-sm"
-            >
-                View Firm Cases
-            </Text>
+          <Text
+            style={{fontFamily: 'SpaceGrotesk-Bold'}}
+            className="text-[#01B779] text-sm">
+            View Firm Cases
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -162,9 +231,23 @@ const YourCasesListScreen = () => {
         <View className="w-[40%] bg-[#01B779] rounded-l-lg px-2">
           <Dropdown
             style={{height: 40}}
-            containerStyle={{ borderRadius: 0, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
-            placeholderStyle={{ color: '#fff', fontSize: 14, textAlign: 'center', fontFamily: 'SpaceGrotesk-Regular' }}
-            selectedTextStyle={{ color: '#fff', fontSize: 14, textAlign: 'center', fontFamily: 'SpaceGrotesk-Regular' }}
+            containerStyle={{
+              borderRadius: 0,
+              borderTopLeftRadius: 8,
+              borderBottomLeftRadius: 8,
+            }}
+            placeholderStyle={{
+              color: '#fff',
+              fontSize: 14,
+              textAlign: 'center',
+              fontFamily: 'SpaceGrotesk-Regular',
+            }}
+            selectedTextStyle={{
+              color: '#fff',
+              fontSize: 14,
+              textAlign: 'center',
+              fontFamily: 'SpaceGrotesk-Regular',
+            }}
             iconStyle={{width: 20, height: 20, tintColor: '#fff'}}
             data={parameterOptions}
             labelField="label"
@@ -191,22 +274,29 @@ const YourCasesListScreen = () => {
       </View>
 
       <ScrollView className="flex-1 mt-1">
-        {filteredCases.map((item) => (
-          <TouchableOpacity key={item.id} onPress={() => handleCaseItemPress(item)}>
+        {filterCase?.map(item => (
+          <TouchableOpacity
+            key={item._id}
+            onPress={() => handleCaseItemPress(item)}>
             <View
               className={`p-4 rounded-xl border border-[#016361] bg-[#062C2D] mb-4`}>
               <Text className="text-white font-bold text-sm font-spacegrotesk">
                 Claw Case ID:{' '}
-                <Text className="text-white font-normal font-spacegrotesk">{item.claw_case_id}</Text>
+                <Text className="text-white font-normal font-spacegrotesk">
+                  {item.case.clawCaseId}
+                </Text>
               </Text>
               <Text className="text-white font-bold text-sm mt-1 font-spacegrotesk">
-                CRN No : <Text className="text-white font-normal font-spacegrotesk">{item.crn_no}</Text>
+                CRN No :{' '}
+                <Text className="text-white font-normal font-spacegrotesk">
+                  {item.case.crnNum}
+                </Text>
               </Text>
               <Text className="text-white font-bold text-sm mt-1 font-spacegrotesk">
-                Case Details :
+                Case Type :
               </Text>
               <Text className="text-white text-sm mt-0.5 font-spacegrotesk">
-                {item.case_details}
+                {item.case.caseType}
               </Text>
             </View>
           </TouchableOpacity>
@@ -226,7 +316,7 @@ const YourCasesListScreen = () => {
             <Text
               style={{fontFamily: 'SpaceGrotesk-Bold'}}
               className="text-white font-semibold">
-              Add Cases 
+              Add Cases
             </Text>
           </Pressable>
         </LinearGradient>

@@ -4,27 +4,75 @@ import {NODE_API_ENDPOINT} from '../utils/util';
 
 // Define a User interface. Adjust the fields as necessary.
 
-export interface company {
-  GSTNumber: string;
-  address: string;
-  name: string;
+// export interface company {
+//   GSTNumber: string;
+//   address: string;
+//   name: string;
+//   _id: string;
+//   inventory: string | null;
+// }
+
+// interface User {
+//   userId: string;
+//   token: string;
+//   name: string;
+//   email: string;
+//   type: string;
+//   companies: company[];
+//   organizationName: string;
+//   // add other fields as needed
+// }
+
+export interface Advocate {
   _id: string;
-  inventory: string | null;
+  name: string;
+  phoneNumber: string;
+  email: string;
+  advocateBarCode: string;
+  courtOfPractice:
+    | 'District Court'
+    | 'State High Court'
+    | 'Superme Court of India';
+  FirmOwner: string;
+  __v?: number;
 }
 
-interface User {
-  userId: string;
-  token: string;
+export interface FirmOwner {
+  _id: string;
   name: string;
   email: string;
+  phoneNumber: string;
+  advocateBarCode: string;
+  courtOfPractice:
+    | 'District Court'
+    | 'State High Court'
+    | 'Superme Court of India';
+  advocates: Advocate[];
+  createdAt: string;
+  updatedAt: string;
   type: string;
-  companies: company[];
-  // add other fields as needed
+  token: string;
+  __v?: number;
+}
+export interface Advocate {
+  _id: string;
+  name: string;
+  phoneNumber: string;
+  email: string;
+  advocateBarCode: string;
+  courtOfPractice:
+    | 'District Court'
+    | 'State High Court'
+    | 'Superme Court of India';
+  FirmOwner: string;
+  type: string;
+  token: string;
+  __v?: number;
 }
 
 // Define the Auth state interface.
 interface AuthState {
-  user: User | null;
+  user: FirmOwner | null | Advocate;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error?: string;
   // Optional: you can store additional properties from your API
@@ -39,41 +87,87 @@ const initialState: AuthState = {
 
 // Create an async thunk for retrieving auth information.
 export const retrieveAuth = createAsyncThunk<
-  {user: User; props?: any} | null, // Returned type when fulfilled
+  {user: FirmOwner | Advocate; props?: any} | null, // Returned type when fulfilled
   void, // No argument needed when dispatching
   {rejectValue: string}
 >('auth/retrieveAuth', async (_, {rejectWithValue}) => {
   try {
     console.log('thunk is calling');
     // Retrieve stored auth data from AsyncStorage.
-    const storedAuth = await AsyncStorage.getItem('clawInverntory_auth_user');
+    const storedAuth = await AsyncStorage.getItem('legalAutomation_auth_user');
     console.log(storedAuth);
     if (storedAuth) {
-      const parsedUser: User = JSON.parse(storedAuth);
-      // Call your backend endpoint to validate or fetch additional user properties.
-      const response = await fetch(`${NODE_API_ENDPOINT}/auth/getVerify`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${parsedUser.token}`,
-        },
-      });
-      if (!response.ok) {
-        return rejectWithValue('Failed to fetch user data');
+      const parsedUser: FirmOwner | Advocate = JSON.parse(storedAuth);
+      console.log(parsedUser.type);
+      if (parsedUser.type === 'manager') {
+        console.log('Manager');
+        // Call your backend endpoint to validate or fetch additional user properties.
+        const response = await fetch(`${NODE_API_ENDPOINT}/auth/getVerify`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${parsedUser.token}`,
+          },
+        });
+        console.log(response);
+        if (!response.ok) {
+          return rejectWithValue('Failed to fetch user data');
+        }
+        const parsedProps = await response.json();
+        console.log(parsedProps);
+        // Ensure the returned user matches the FirmOwner interface
+        return {
+          user: {
+            _id: parsedProps.firmOwner._id,
+            name: parsedProps.firmOwner.name,
+            email: parsedProps.firmOwner.email,
+            phoneNumber: parsedProps.firmOwner.phoneNumber,
+            advocateBarCode: parsedProps.firmOwner.advocateBarCode,
+            courtOfPractice: parsedProps.firmOwner.courtOfPractice,
+            advocates: parsedProps.firmOwner.advocates,
+            createdAt: parsedProps.firmOwner.createdAt,
+            updatedAt: parsedProps.firmOwner.updatedAt,
+            type: parsedProps.type,
+            token: parsedProps.token,
+            __v: parsedProps.firmOwner.__v,
+          } as FirmOwner,
+          props: parsedProps,
+        };
+      } else {
+        console.log('Salesman');
+        // Call your backend endpoint to validate or fetch additional user properties.
+        const response = await fetch(
+          `${NODE_API_ENDPOINT}/auth/getVerifyAdvocate`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${parsedUser.token}`,
+            },
+          },
+        );
+        if (!response.ok) {
+          return rejectWithValue('Failed to fetch user data');
+        }
+        const parsedProps = await response.json();
+        console.log(parsedProps);
+        // Ensure the returned user matches the Advocate interface
+        return {
+          user: {
+            _id: parsedProps.advocateWithoutPassword._id,
+            name: parsedProps.advocateWithoutPassword.name,
+            phoneNumber: parsedProps.advocateWithoutPassword.phoneNumber,
+            email: parsedProps.advocateWithoutPassword.email,
+            advocateBarCode:
+              parsedProps.advocateWithoutPassword.advocateBarCode,
+            courtOfPractice:
+              parsedProps.advocateWithoutPassword.courtOfPractice,
+            FirmOwner: parsedProps.advocateWithoutPassword.FirmOwner,
+            type: parsedProps.type,
+            token: parsedProps.token,
+            __v: parsedProps.advocateWithoutPassword.__v,
+          } as Advocate,
+          props: parsedProps,
+        };
       }
-      const parsedProps = await response.json();
-      console.log(parsedProps);
-      return {
-        user: {
-          token: parsedProps.token,
-          userId: parsedProps.user.id,
-          name: parsedProps.user.name,
-          email: parsedProps.user.email,
-          type: parsedProps.user.type,
-          companies: parsedProps.user.companies,
-          inventory: null,
-        },
-        props: parsedProps,
-      };
     } else {
       return null;
     }
@@ -87,25 +181,29 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     // Login reducer: sets user and saves auth info to AsyncStorage.
-    login: (state, action: PayloadAction<User>) => {
+    login: (state, action: PayloadAction<FirmOwner>) => {
       state.user = action.payload;
       console.log(action.payload);
       // Save the user data as a JSON string.
       AsyncStorage.setItem(
-        'clawInverntory_auth_user',
+        'legalAutomation_auth_user',
+        JSON.stringify(action.payload),
+      );
+    },
+    loginUser: (state, action: PayloadAction<Advocate>) => {
+      state.user = action.payload;
+      console.log(action.payload);
+      // Save the user data as a JSON string.
+      AsyncStorage.setItem(
+        'legalAutomation_auth_user',
         JSON.stringify(action.payload),
       );
     },
     // Logout reducer: clears user data and removes auth from AsyncStorage.
     logout: state => {
       state.user = null;
-      AsyncStorage.removeItem('clawInverntory_auth_user');
+      AsyncStorage.removeItem('legalAutomation_auth_user');
       console.log('User Logged Out');
-    },
-    updateCompanies: (state, action: PayloadAction<company[]>) => {
-      if (state?.user) {
-        state.user.companies = action.payload;
-      }
     },
   },
   extraReducers: builder => {
@@ -121,12 +219,13 @@ const authSlice = createSlice({
     });
     builder.addCase(retrieveAuth.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = action.payload
-        ? action.payload
-        : 'Authentication retrieval failed';
+      state.error =
+        typeof action.payload === 'string'
+          ? action.payload
+          : 'Authentication retrieval failed';
     });
   },
 });
 
-export const {login, logout, updateCompanies} = authSlice.actions;
+export const {login, logout, loginUser} = authSlice.actions;
 export default authSlice.reducer;

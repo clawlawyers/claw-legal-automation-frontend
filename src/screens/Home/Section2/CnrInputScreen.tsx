@@ -17,17 +17,20 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {YourCasesStackParamList} from '../../../stacks/YourCasesStack'; 
+import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
 const REFERENCE_DESIGN_WIDTH = 393;
 const REFERENCE_DESIGN_HEIGHT = 852;
 
-const getWidthPercentage = (pixelWidth: number): number => (pixelWidth / REFERENCE_DESIGN_WIDTH) * screenWidth;
-const getHeightPercentage = (pixelHeight: number): number => (pixelHeight / REFERENCE_DESIGN_HEIGHT) * screenHeight;
+const getWidthPercentage = (pixelWidth: number): number =>
+  (pixelWidth / REFERENCE_DESIGN_WIDTH) * screenWidth;
+const getHeightPercentage = (pixelHeight: number): number =>
+  (pixelHeight / REFERENCE_DESIGN_HEIGHT) * screenHeight;
 const scaleText = (pixelFontSize: number): number => {
   const scaleFactor = screenWidth / REFERENCE_DESIGN_WIDTH;
   return Math.round(pixelFontSize * scaleFactor * 0.95);
@@ -42,6 +45,7 @@ const CnrInputScreen = () => {
   const navigation = useNavigation<CnrInputScreenNavigationProp>();
   const [crnValue, setCrnValue] = useState('');
 
+  const [caseType, setCaseType] = useState('');
   const handleFetchCase = () => {
     if (!crnValue.trim()) {
       Toast.show({
@@ -54,11 +58,17 @@ const CnrInputScreen = () => {
       return;
     }
     console.log('Fetching case with CNR:', crnValue);
-    navigation.navigate('CaseLoadingScreen', { fromScreen: 'CnrInputScreen' });
+    navigation.navigate('CaseLoadingScreen', {fromScreen: 'CnrInputScreen'});
+  };
+  const openCaseTypePicker = () => {
+    Toast.show({type: 'info', text1: 'Action', text2: 'Open Case Type Picker'});
+    setCaseType(''); // Mock selection
   };
 
   return (
-    <LinearGradient colors={['#0A3A40', '#083035']} style={styles.mainContainer}>
+    <LinearGradient
+      colors={['#0A3A40', '#083035']}
+      style={styles.mainContainer}>
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.safeArea}>
         {/* Header with Back Button */}
@@ -66,7 +76,12 @@ const CnrInputScreen = () => {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}>
-            <Icon name="arrow-back-ios" size={scaleText(18)} color="#FFFFFF" style={{ marginLeft: getWidthPercentage(8) }} />
+            <Icon
+              name="arrow-back-ios"
+              size={scaleText(18)}
+              color="#FFFFFF"
+              style={{marginLeft: getWidthPercentage(8)}}
+            />
           </TouchableOpacity>
         </View>
 
@@ -78,7 +93,6 @@ const CnrInputScreen = () => {
               contentContainerStyle={styles.scrollContentContainer}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}>
-              
               <Image
                 source={require('../../../assets/casesearch.png')}
                 style={styles.searchIconImage}
@@ -88,13 +102,35 @@ const CnrInputScreen = () => {
               <Text style={styles.titleText}>Search Using CNR Number</Text>
 
               <Text style={styles.instructionText}>
-                Enter A Valid CNR Number To Fetch Your Case And Add To Your Cases
+                Enter A Valid CNR Number To Fetch Your Case And Add To Your
+                Cases
               </Text>
 
               <LinearGradient
                 colors={['#016361', '#01B779']}
-                start={{x: 0.1, y: 0}}
-                end={{x: 0.9, y: 1}}
+                style={styles.inputGradientBorder}>
+                <TouchableOpacity
+                  onPress={openCaseTypePicker}
+                  style={styles.dropdownTouchable}>
+                  <Text
+                    style={[
+                      styles.inputText,
+                      !caseType && styles.placeholderText,
+                    ]}>
+                    {caseType || 'Select Case Type'}
+                  </Text>
+                  <FeatherIcon
+                    name="chevron-down"
+                    size={scaleText(20)}
+                    color="#ACACAC"
+                  />
+                </TouchableOpacity>
+              </LinearGradient>
+
+              <LinearGradient
+                colors={['#01B779', '#008C68']}
+                start={{x: 0, y: 0.5}}
+                end={{x: 1, y: 0.5}}
                 style={styles.inputGradientBorder}>
                 <TextInput
                   style={styles.textInput}
@@ -109,7 +145,9 @@ const CnrInputScreen = () => {
 
             {/* Bottom Fetch Button */}
             <View style={styles.bottomButtonContainer}>
-              <TouchableOpacity onPress={handleFetchCase} style={{width: '100%', height: '100%'}}>
+              <TouchableOpacity
+                onPress={handleFetchCase}
+                style={{width: '100%', height: '100%'}}>
                 <LinearGradient
                   colors={['#01B779', '#008C68']}
                   start={{x: 0, y: 0.5}}
@@ -154,7 +192,7 @@ const styles = StyleSheet.create({
   scrollContentContainer: {
     alignItems: 'center',
     paddingHorizontal: getWidthPercentage(32),
-    paddingTop: getHeightPercentage(120), 
+    paddingTop: getHeightPercentage(120),
     paddingBottom: getHeightPercentage(20),
   },
   searchIconImage: {
@@ -166,7 +204,7 @@ const styles = StyleSheet.create({
     fontSize: scaleText(24),
     color: '#01B679',
     textAlign: 'center',
-    marginTop: getHeightPercentage(24), 
+    marginTop: getHeightPercentage(24),
   },
   instructionText: {
     fontFamily: 'SpaceGrotesk-Regular',
@@ -183,7 +221,7 @@ const styles = StyleSheet.create({
     height: getHeightPercentage(48),
     borderRadius: 10,
     marginTop: getHeightPercentage(36),
-    padding: 1.5, 
+    padding: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -213,6 +251,24 @@ const styles = StyleSheet.create({
     fontFamily: 'SpaceGrotesk-Bold',
     fontSize: scaleText(16),
     color: 'white',
+  },
+  dropdownTouchable: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(8, 48, 53, 0.85)',
+    borderRadius: 8.5,
+    paddingHorizontal: getWidthPercentage(20),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  inputText: {
+    fontFamily: 'SpaceGrotesk-Medium',
+    fontSize: scaleText(15),
+    color: '#FFFFFF',
+  },
+  placeholderText: {
+    color: 'rgba(172, 172, 172, 0.7)',
   },
 });
 
