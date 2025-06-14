@@ -73,13 +73,17 @@ import {NavigationContainer} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 
 import RootStack from './src/stacks/RootStack';
+import {Provider} from 'react-redux';
+import {store} from './src/redux/store';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <RootStack />
-      <Toast />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootStack />
+        <Toast />
+      </NavigationContainer>
+    </Provider>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import YourCasesListScreen from '../screens/Home/Section2/YourCasesListScreen'; // Adjust path
 import NoCasesAdded from '../screens/Home/Section2/NoCasesAdded';
@@ -33,31 +33,79 @@ import ProceedingDetailsSentScreen from '../screens/Home/Section5/ProceedingDeta
 import CasePaymentDetailsScreen from '../screens/Home/Section5/CasePaymentDetailsScreen'; // Adjust the path if needed
 import SendInvoiceReminderScreen from '../screens/Home/Section5/SendInvoiceReminderScreen'; // Add this import
 import InvoiceReminderSentScreen from '../screens/Home/Section5/InvoiceReminderSentScreen'; // Add this import
+import {NODE_API_ENDPOINT} from '../utils/util';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../redux/store';
+import {setCases} from '../redux/commonSlice';
+import {ActivityIndicator} from 'react-native';
 
-export type CaseDetailsType  = {
-  clawId: string;
-  crn: string;
-  details: string;
-  // Add other fields from your case object if they exist
-  caseHead?: string;
-  registrationNumber?: string;
-  filingNumber?: string;
-  courtName?: string;
-  petitionerName?: string;
-   registration_no?: string;
-  filing_no?: string;
-  court_name?: string;
-  petitioner_name?: string;
+// export type CaseDetailsType = {
+//   clawId: string;
+//   crn: string;
+//   details: string;
+//   // Add other fields from your case object if they exist
+//   caseHead?: string;
+//   registrationNumber?: string;
+//   filingNumber?: string;
+//   courtName?: string;
+//   petitionerName?: string;
+//   registration_no?: string;
+//   filing_no?: string;
+//   court_name?: string;
+//   petitioner_name?: string;
 
-  id?: string; 
-  claw_case_id?: string; 
-  crn_no?: string; 
-  case_details?: string; 
+//   id?: string;
+//   claw_case_id?: string;
+//   crn_no?: string;
+//   case_details?: string;
+// };
+
+export type ClientType = {
+  clientName: string;
+  email: string;
+  phone?: string;
+  modeOfCommunication?: 'Email' | 'Phone';
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type CaseDetailsType = {
+  _id: string;
+
+  case: {
+    _id: string;
+    crnNum: string;
+    clawCaseId: string;
+    filingNum: string;
+    registrationNum: string;
+    caseType: string;
+    caseNum: string;
+    year: string;
+    previousCourtOrder: any[]; // Replace with specific type if available
+    state: string;
+    district: string;
+    courtComplex: string;
+    caseHierarchy: string;
+    caseStatus: string;
+    NextHearingDate: string; // ISO date string
+    lastFetchedDate: string; // ISO date string
+
+    partyName: {
+      petitioners: string[];
+      respondents: string[];
+    };
+    __v: number;
+  };
+
+  client: ClientType[];
+  Advocate: string;
+  isActive: boolean;
+  __v: number;
 };
 
 export type YourCasesStackParamList = {
- YourCasesListScreen: undefined;
- CasesListScreen: undefined; 
+  YourCasesListScreen: undefined; // Adjust the type if needed
+  CasesListScreen: undefined;
   NoCasesAdded: undefined;
   CaseDetailsDownloadScreen: undefined;
   ClientDetailsScreen: undefined;
@@ -65,62 +113,130 @@ export type YourCasesStackParamList = {
   AddNewClientScreen: undefined;
   ViewClientCasesScreen: undefined;
   MultipleTypesSearchScreen: undefined;
- 
-  CaseDetailsScreen: undefined; 
-  CaseAddedScreen : undefined; 
-   NoActiveAlertsScreen?: undefined;
-  ClientUpdateSuccessScreen : undefined;
-    AssociateClientCaseScreen: { caseId: string; caseDetails: CaseDetailsType } | undefined;
-   AssociationScreen: { clientName: string; clientId?: string };
-   SendCaseDetailsScreen : { caseDetails: CaseDetailsType };
-   CaseLoadingScreen: { fromScreen: string } | undefined;
-   
-   // Adjust the type if needed
-   CnrInputScreen : undefined;
-   SearchedCaseListScreen : undefined; 
-   
-   CaseNumberInputScreen : undefined; 
-   FilingNumberInputScreen : undefined;
-   PartyNameInputScreen : undefined; 
-   AdvocateNameInputScreen : undefined;
-   BarIdInputScreen: undefined; 
-   CaseHearingDetailsScreen :undefined;
-   HearingOrderDetailsScreen :undefined;
-   SendHearingCaseDetails : undefined;
-   SendHearingMessageScreen :undefined;
-   SelectClientsScreen : undefined; 
-   ProceedingDetailsSent :undefined;
-   CasePaymentDetailsScreen : undefined; 
-   SendInvoiceReminderScreen : undefined; 
-   InvoiceReminderSentScreen : undefined;
 
+  CaseDetailsScreen: undefined;
+  CaseAddedScreen: undefined;
+  NoActiveAlertsScreen?: undefined;
+  ClientUpdateSuccessScreen: undefined;
+  AssociateClientCaseScreen:
+    | {caseId: string; caseDetails: CaseDetailsType}
+    | undefined;
+  AssociationScreen: {clientName: string; clientId?: string};
+  SendCaseDetailsScreen: {caseDetails: CaseDetailsType};
+  CaseLoadingScreen: {fromScreen: string} | undefined;
 
-  FetchingCaseScreen: { // Define params if you need to pass data
-    // from CaseInputScreen
-    crnValue?: string;
-    selectedCaseTypeValue?: string | null;
-    actualCaseNumberValue?: string;
-    caseYearValue?: string;
-    filingNumberValue?: string;
-    filingYearValue?: string;
-  } | undefined;
+  // Adjust the type if needed
+  CnrInputScreen: undefined;
+  SearchedCaseListScreen: undefined;
+
+  CaseNumberInputScreen: undefined;
+  FilingNumberInputScreen: undefined;
+  PartyNameInputScreen: undefined;
+  AdvocateNameInputScreen: undefined;
+  BarIdInputScreen: undefined;
+  CaseHearingDetailsScreen: undefined;
+  HearingOrderDetailsScreen: undefined;
+  SendHearingCaseDetails: undefined;
+  SendHearingMessageScreen: undefined;
+  SelectClientsScreen: undefined;
+  ProceedingDetailsSent: undefined;
+  CasePaymentDetailsScreen: undefined;
+  SendInvoiceReminderScreen: undefined;
+  InvoiceReminderSentScreen: undefined;
+
+  FetchingCaseScreen:
+    | {
+        // Define params if you need to pass data
+        // from CaseInputScreen
+        crnValue?: string;
+        selectedCaseTypeValue?: string | null;
+        actualCaseNumberValue?: string;
+        caseYearValue?: string;
+        filingNumberValue?: string;
+        filingYearValue?: string;
+      }
+    | undefined;
 };
 
 const Stack = createNativeStackNavigator<YourCasesStackParamList>();
 
 const YourCasesStack = () => {
+  // This stack will handle all the screens related to "Your Cases"
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const status = useSelector((state: RootState) => state.auth.status);
+
+  const [caseLists, setCaseLists] = React.useState<CaseDetailsType[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getCase = async () => {
+      if (!currentUser?.token) {
+        console.error('No user token found');
+        return;
+      }
+      setLoading(true);
+      setCaseLists([]); // Reset case lists before fetching
+      const caseList = await fetch(`${NODE_API_ENDPOINT}/case/getCases/user`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser?.token}`,
+        },
+      });
+      if (!caseList.ok) {
+        console.error('Failed to fetch cases:', caseList.statusText);
+        setLoading(false);
+        throw new Error('Failed to fetch cases');
+      }
+      setLoading(false);
+      const data = await caseList.json();
+      console.log(data);
+      setCaseLists(data.cases);
+      dispatch(setCases(data.cases));
+    };
+    if (currentUser?.token) {
+      getCase().catch(error => {
+        console.error('Error fetching cases:', error);
+      });
+    }
+  }, [currentUser?.token, dispatch, setCaseLists]);
+
+  console.log(caseLists);
+
+  console.log(!loading && caseLists?.length === 0);
+
+  if (loading && status === 'loading') {
+    return (
+      <ActivityIndicator
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#016361',
+        }}
+        size="large"
+        color="#fff"
+      />
+    );
+  }
+  console.log(
+    caseLists?.length === 0 && loading === false
+      ? 'NoCasesAdded'
+      : 'YourCasesListScreen',
+  );
+
   return (
     <Stack.Navigator
-      initialRouteName="NoCasesAdded"
+      initialRouteName={'YourCasesListScreen'}
       screenOptions={{headerShown: false}}>
       <Stack.Screen
         name="YourCasesListScreen"
         component={YourCasesListScreen}
       />
-      <Stack.Screen
-        name="CasesListScreen"
-        component={YourCasesListScreen}
-      />
+      <Stack.Screen name="CasesListScreen" component={YourCasesListScreen} />
       <Stack.Screen name="NoCasesAdded" component={NoCasesAdded} />
       <Stack.Screen
         name="CaseDetailsDownloadScreen"
@@ -142,41 +258,91 @@ const YourCasesStack = () => {
         component={ViewClientCasesScreen}
       />
 
-      <Stack.Screen name="MultipleTypesSearchScreen" component={MultipleTypesSearchScreen} />
+      <Stack.Screen
+        name="MultipleTypesSearchScreen"
+        component={MultipleTypesSearchScreen}
+      />
 
       <Stack.Screen name="CnrInputScreen" component={CnrInputScreen} />
-     <Stack.Screen name="SearchedCaseListScreen" component={SearchedCaseListScreen} />
+      <Stack.Screen
+        name="SearchedCaseListScreen"
+        component={SearchedCaseListScreen}
+      />
 
-     <Stack.Screen name="CaseNumberInputScreen" component={ CaseNumberInputScreen} />
-     <Stack.Screen name="FilingNumberInputScreen" component={ FilingNumberInputScreen} />
-     <Stack.Screen name="PartyNameInputScreen" component={  PartyNameInputScreen} />
-     <Stack.Screen name="AdvocateNameInputScreen" component={ AdvocateNameInputScreen} />
+      <Stack.Screen
+        name="CaseNumberInputScreen"
+        component={CaseNumberInputScreen}
+      />
+      <Stack.Screen
+        name="FilingNumberInputScreen"
+        component={FilingNumberInputScreen}
+      />
+      <Stack.Screen
+        name="PartyNameInputScreen"
+        component={PartyNameInputScreen}
+      />
+      <Stack.Screen
+        name="AdvocateNameInputScreen"
+        component={AdvocateNameInputScreen}
+      />
       <Stack.Screen name="BarIdInputScreen" component={BarIdInputScreen} />
 
+      <Stack.Screen name="FetchingCaseScreen" component={FetchingCaseScreen} />
 
+      <Stack.Screen name="CaseDetailsScreen" component={CaseDetailsScreen} />
 
-       <Stack.Screen name="FetchingCaseScreen" component={FetchingCaseScreen} />
-      
-        <Stack.Screen name="CaseDetailsScreen" component={CaseDetailsScreen} />
-        
-        <Stack.Screen name="CaseLoadingScreen" component={CaseLoadingScreen} />
-        <Stack.Screen name="CaseAddedScreen" component={CaseAddedScreen} />
-        <Stack.Screen name="ClientUpdateSuccessScreen" component={ClientUpdateSuccess} />
-        <Stack.Screen name="AssociateClientCaseScreen" component={AssociateClientCaseScreen} />
-        <Stack.Screen name="SendCaseDetailsScreen" component={SendCaseDetailsScreen} />
-         <Stack.Screen name="SendHearingCaseDetails" component={SendCaseDetailsScreen} />
+      <Stack.Screen name="CaseLoadingScreen" component={CaseLoadingScreen} />
+      <Stack.Screen name="CaseAddedScreen" component={CaseAddedScreen} />
+      <Stack.Screen
+        name="ClientUpdateSuccessScreen"
+        component={ClientUpdateSuccess}
+      />
+      <Stack.Screen
+        name="AssociateClientCaseScreen"
+        component={AssociateClientCaseScreen}
+      />
+      <Stack.Screen
+        name="SendCaseDetailsScreen"
+        component={SendCaseDetailsScreen}
+      />
+      <Stack.Screen
+        name="SendHearingCaseDetails"
+        component={SendCaseDetailsScreen}
+      />
 
-        <Stack.Screen name='CaseHearingDetailsScreen' component={CaseHearingDetailsScreen}/>
-        <Stack.Screen name='HearingOrderDetailsScreen' component={HearingOrderDetailsScreen}/>
-        <Stack.Screen name='SendHearingMessageScreen' component={SendHearingMessageScreen} />
-        <Stack.Screen name='SelectClientsScreen' component={SelectClientsScreen}/>
-        <Stack.Screen name='ProceedingDetailsSent' component={ProceedingDetailsSentScreen}/>
-        <Stack.Screen name='CasePaymentDetailsScreen' component={CasePaymentDetailsScreen} />
-        <Stack.Screen name='SendInvoiceReminderScreen' component={SendInvoiceReminderScreen} />
-        <Stack.Screen name='InvoiceReminderSentScreen' component={InvoiceReminderSentScreen}/>
+      <Stack.Screen
+        name="CaseHearingDetailsScreen"
+        component={CaseHearingDetailsScreen}
+      />
+      <Stack.Screen
+        name="HearingOrderDetailsScreen"
+        component={HearingOrderDetailsScreen}
+      />
+      <Stack.Screen
+        name="SendHearingMessageScreen"
+        component={SendHearingMessageScreen}
+      />
+      <Stack.Screen
+        name="SelectClientsScreen"
+        component={SelectClientsScreen}
+      />
+      <Stack.Screen
+        name="ProceedingDetailsSent"
+        component={ProceedingDetailsSentScreen}
+      />
+      <Stack.Screen
+        name="CasePaymentDetailsScreen"
+        component={CasePaymentDetailsScreen}
+      />
+      <Stack.Screen
+        name="SendInvoiceReminderScreen"
+        component={SendInvoiceReminderScreen}
+      />
+      <Stack.Screen
+        name="InvoiceReminderSentScreen"
+        component={InvoiceReminderSentScreen}
+      />
 
-
-     
       {/* Add other screens as needed */}
     </Stack.Navigator>
   );

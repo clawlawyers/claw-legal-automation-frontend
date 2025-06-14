@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {YourCasesStackParamList} from '../../../stacks/YourCasesStack'; 
+import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -28,8 +28,10 @@ const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 const REFERENCE_DESIGN_WIDTH = 393;
 const REFERENCE_DESIGN_HEIGHT = 852;
 
-const getWidthPercentage = (pixelWidth: number): number => (pixelWidth / REFERENCE_DESIGN_WIDTH) * screenWidth;
-const getHeightPercentage = (pixelHeight: number): number => (pixelHeight / REFERENCE_DESIGN_HEIGHT) * screenHeight;
+const getWidthPercentage = (pixelWidth: number): number =>
+  (pixelWidth / REFERENCE_DESIGN_WIDTH) * screenWidth;
+const getHeightPercentage = (pixelHeight: number): number =>
+  (pixelHeight / REFERENCE_DESIGN_HEIGHT) * screenHeight;
 const scaleText = (pixelFontSize: number): number => {
   const scaleFactor = screenWidth / REFERENCE_DESIGN_WIDTH;
   return Math.round(pixelFontSize * scaleFactor * 0.95);
@@ -53,8 +55,12 @@ const CaseNumberInputScreen = () => {
 
   const handleFetchCase = () => {
     if (!selectedCourt) {
-        Toast.show({type: 'error', text1: 'Input Required', text2: 'Please select a court.'});
-        return;
+      Toast.show({
+        type: 'error',
+        text1: 'Input Required',
+        text2: 'Please select a court.',
+      });
+      return;
     }
     // --- (End of new validation) ---
     // if (!caseType) {
@@ -62,46 +68,64 @@ const CaseNumberInputScreen = () => {
     //     return;
     // }
     if (!caseNumber.trim()) {
-        Toast.show({type: 'error', text1: 'Input Required', text2: 'Please enter the Case Number.'});
-        return;
+      Toast.show({
+        type: 'error',
+        text1: 'Input Required',
+        text2: 'Please enter the Case Number.',
+      });
+      return;
     }
     if (!caseYear.trim() || !/^\d{4}$/.test(caseYear.trim())) {
-        Toast.show({type: 'error', text1: 'Input Required', text2: 'Please enter a valid 4-digit Case Year.'});
-        return;
+      Toast.show({
+        type: 'error',
+        text1: 'Input Required',
+        text2: 'Please enter a valid 4-digit Case Year.',
+      });
+      return;
     }
-    
-    console.log(`Fetching case: Type - ${caseType}, Number - ${caseNumber}, Year - ${caseYear}`);
-    console.log('With saved court details:', selectedCourt); // Log the saved court data
-   navigation.navigate('CaseLoadingScreen', { fromScreen: 'CaseNumberInputScreen' });
 
+    console.log(
+      `Fetching case: Type - ${caseType}, Number - ${caseNumber}, Year - ${caseYear}`,
+    );
+    console.log('With saved court details:', selectedCourt); // Log the saved court data
+    navigation.navigate('CaseLoadingScreen', {
+      fromScreen: 'CaseNumberInputScreen',
+    });
   };
-  
+
   const openCaseTypePicker = () => {
-      Toast.show({type: 'info', text1: 'Action', text2: 'Open Case Type Picker'});
-      setCaseType(''); // Mock selection
+    Toast.show({type: 'info', text1: 'Action', text2: 'Open Case Type Picker'});
+    setCaseType(''); // Mock selection
   };
 
   const handleSaveCourt = (data: CourtData) => {
     setSelectedCourt(data);
-    setCourtModalVisible(false); 
+    setCourtModalVisible(false);
   };
 
   const getCourtButtonText = () => {
-    if (!selectedCourt) return "Select Court";
+    if (!selectedCourt) return 'Select Court';
     if (selectedCourt.highCourt) return selectedCourt.highCourt;
-    if (selectedCourt.courtType === 'districtCourt') return "District Court";
-    return "Court Selected";
+    if (selectedCourt.courtType === 'districtCourt') return 'District Court';
+    return 'Court Selected';
   };
 
   return (
-    <LinearGradient colors={['#0A3A40', '#083035']} style={styles.mainContainer}>
+    <LinearGradient
+      colors={['#0A3A40', '#083035']}
+      style={styles.mainContainer}>
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.headerContainer}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}>
-            <Icon name="arrow-back-ios" size={scaleText(18)} color="#FFFFFF" style={{ marginLeft: getWidthPercentage(8) }} />
+            <Icon
+              name="arrow-back-ios"
+              size={scaleText(18)}
+              color="#FFFFFF"
+              style={{marginLeft: getWidthPercentage(8)}}
+            />
           </TouchableOpacity>
         </View>
 
@@ -113,7 +137,6 @@ const CaseNumberInputScreen = () => {
               contentContainerStyle={styles.scrollContentContainer}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}>
-              
               <Image
                 source={require('../../../assets/casesearch.png')}
                 style={styles.searchIconImage}
@@ -122,39 +145,82 @@ const CaseNumberInputScreen = () => {
 
               <Text style={styles.titleText}>Search Using Case Number</Text>
               <Text style={styles.instructionText}>
-                Enter Valid Case Details To Fetch Your Case And Add To Your Cases
+                Enter Valid Case Details To Fetch Your Case And Add To Your
+                Cases
               </Text>
 
-              <LinearGradient colors={['#016361', '#01B779']} style={styles.inputGradientBorder}>
-                <TouchableOpacity onPress={openCaseTypePicker} style={styles.dropdownTouchable}>
-                    <Text style={[styles.inputText, !caseType && styles.placeholderText]}>
-                        {caseType || 'Select Case Type'}
-                    </Text>
-                    <FeatherIcon name="chevron-down" size={scaleText(20)} color="#ACACAC" />
+              <LinearGradient
+                colors={['#016361', '#01B779']}
+                style={styles.inputGradientBorder}>
+                <TouchableOpacity
+                  onPress={openCaseTypePicker}
+                  style={styles.dropdownTouchable}>
+                  <Text
+                    style={[
+                      styles.inputText,
+                      !caseType && styles.placeholderText,
+                    ]}>
+                    {caseType || 'Select Case Type'}
+                  </Text>
+                  <FeatherIcon
+                    name="chevron-down"
+                    size={scaleText(20)}
+                    color="#ACACAC"
+                  />
                 </TouchableOpacity>
               </LinearGradient>
-              <LinearGradient colors={['#016361', '#01B779']} style={styles.inputGradientBorder}>
-                <TextInput style={styles.textInput} placeholder="Enter Case Number" placeholderTextColor="rgba(172, 172, 172, 0.7)" value={caseNumber} onChangeText={setCaseNumber} keyboardAppearance="dark" />
+              <LinearGradient
+                colors={['#016361', '#01B779']}
+                style={styles.inputGradientBorder}>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Enter Case Number"
+                  placeholderTextColor="rgba(172, 172, 172, 0.7)"
+                  value={caseNumber}
+                  onChangeText={setCaseNumber}
+                  keyboardAppearance="dark"
+                />
               </LinearGradient>
-              <LinearGradient colors={['#016361', '#01B779']} style={styles.inputGradientBorder}>
-                <TextInput style={styles.textInput} placeholder="Enter Case Year" placeholderTextColor="rgba(172, 172, 172, 0.7)" value={caseYear} onChangeText={setCaseYear} keyboardType="number-pad" maxLength={4} keyboardAppearance="dark" />
+              <LinearGradient
+                colors={['#016361', '#01B779']}
+                style={styles.inputGradientBorder}>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Enter Case Year"
+                  placeholderTextColor="rgba(172, 172, 172, 0.7)"
+                  value={caseYear}
+                  onChangeText={setCaseYear}
+                  keyboardType="number-pad"
+                  maxLength={4}
+                  keyboardAppearance="dark"
+                />
               </LinearGradient>
-
             </ScrollView>
 
             {/* Bottom Buttons */}
             <View style={styles.bottomButtonsContainer}>
-                <TouchableOpacity onPress={() => setCourtModalVisible(true)} style={styles.selectCourtButton}>
-                    <Text style={styles.selectCourtButtonText} numberOfLines={1} ellipsizeMode="tail">
-                        {getCourtButtonText()}
-                    </Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setCourtModalVisible(true)}
+                style={styles.selectCourtButton}>
+                <Text
+                  style={styles.selectCourtButtonText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {getCourtButtonText()}
+                </Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity onPress={handleFetchCase} style={styles.fetchCaseButton}>
-                    <LinearGradient colors={['#01B779', '#008C68']} start={{x: 0, y: 0.5}} end={{x: 1, y: 0.5}} style={styles.fetchButtonGradient}>
-                        <Text style={styles.fetchButtonText}>Fetch Case</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleFetchCase}
+                style={styles.fetchCaseButton}>
+                <LinearGradient
+                  colors={['#01B779', '#008C68']}
+                  start={{x: 0, y: 0.5}}
+                  end={{x: 1, y: 0.5}}
+                  style={styles.fetchButtonGradient}>
+                  <Text style={styles.fetchButtonText}>Fetch Case</Text>
+                </LinearGradient>
+              </TouchableOpacity>
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -170,8 +236,8 @@ const CaseNumberInputScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  mainContainer: { flex: 1 },
-  safeArea: { flex: 1 },
+  mainContainer: {flex: 1},
+  safeArea: {flex: 1},
   headerContainer: {
     position: 'absolute',
     top: getHeightPercentage(50),
@@ -267,11 +333,11 @@ const styles = StyleSheet.create({
     borderColor: '#01B779',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: getWidthPercentage(8), 
+    paddingHorizontal: getWidthPercentage(8),
   },
   selectCourtButtonText: {
     fontFamily: 'SpaceGrotesk-Bold',
-    fontSize: scaleText(14), 
+    fontSize: scaleText(14),
     color: '#01B779',
   },
   fetchCaseButton: {

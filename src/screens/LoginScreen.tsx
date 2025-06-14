@@ -17,6 +17,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {MainStackParamList} from '../stacks/MainStack'; // Adjust path as needed
+import {NODE_API_ENDPOINT} from '../utils/util';
+import {useDispatch} from 'react-redux';
+import {login} from '../redux/authSlice';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
   MainStackParamList,
@@ -32,14 +35,64 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
+  const dispatch = useDispatch();
+
+  const handleLogin = async () => {
     // Basic validation example
     if (!email || !password) {
       console.log('Please enter email and password');
       return;
     }
-    console.log(`Logging in as ${selectedRole} with email: ${email}`);
-    navigation.replace('PostAuthLoadingScreen');
+
+    console.log('Logging in...');
+
+    try {
+      const apiURL =
+        selectedRole === 'advocate'
+          ? `${NODE_API_ENDPOINT}/auth/advocate/login`
+          : `${NODE_API_ENDPOINT}/auth/manager/login`;
+
+      console.log('API URL:', apiURL);
+
+      const getLogin = await fetch(apiURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      console.log(getLogin);
+      if (!getLogin.ok) {
+        console.log('Login failed. Please check your credentials.');
+        return;
+      }
+      const response = await getLogin.json();
+
+      dispatch(
+        login({
+          _id: response.firmOwner._id,
+          advocateBarCode: response.firmOwner.advocateBarCode,
+          courtOfPractice: response.firmOwner.courtOfPractice,
+          email: response.firmOwner.email,
+          name: response.firmOwner.name,
+          phoneNumber: response.firmOwner.phoneNumber,
+          advocates: response.firmOwner.advocates,
+          createdAt: response.firmOwner.createdAt,
+          updatedAt: response.firmOwner.updatedAt,
+          type: response.type,
+          token: response.token,
+        }),
+      );
+      console.log('Login successful:', response);
+      console.log(`Logging in as ${selectedRole} with email: ${email}`);
+      navigation.replace('PostAuthLoadingScreen');
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -93,7 +146,8 @@ const LoginScreen = () => {
                       {button}
                     </LinearGradient>
                   ) : (
-                    <View style={[styles.roleButton, styles.roleButtonInactive]}>
+                    <View
+                      style={[styles.roleButton, styles.roleButtonInactive]}>
                       {button}
                     </View>
                   )}

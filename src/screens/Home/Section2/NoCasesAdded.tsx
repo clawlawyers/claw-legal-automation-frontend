@@ -5,11 +5,20 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import {YourCasesStackParamList} from '../../../stacks/YourCasesStack';
+import {useSelector} from 'react-redux';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-type NoCasesAddedNavigationProp = NavigationProp<YourCasesStackParamList>;
+type NoCasesAddedNavigationProp =
+  NativeStackScreenProps<YourCasesStackParamList>;
 
-const NoCasesAdded = () => {
-const navigation = useNavigation<NoCasesAddedNavigationProp>(); 
+const NoCasesAdded = ({navigation}: NoCasesAddedNavigationProp) => {
+  // const navigation = useNavigation<NoCasesAddedNavigationProp>();
+  // const caseList = useSelector((state: any) => state.common.caseList);
+
+  // if (caseList.length > 0) {
+  //   navigation.replace('YourCasesListScreen');
+  // }
+
   return (
     <SafeAreaView className="flex-1 bg-[#062C2D] px-5 justify-between pb-5">
       {/* Header */}
@@ -51,7 +60,7 @@ const navigation = useNavigation<NoCasesAddedNavigationProp>();
 
       {/* Buttons */}
       <View className="space-y-4">
-        <View className="rounded-lg my-4 overflow-hidden">
+        {/* <View className="rounded-lg my-4 overflow-hidden">
           <LinearGradient
             colors={['#016361', '#01B779']}
             start={{x: 0, y: 0}}
@@ -68,7 +77,7 @@ const navigation = useNavigation<NoCasesAddedNavigationProp>();
               </Text>
             </Pressable>
           </LinearGradient>
-        </View>
+        </View> */}
 
         {/* Add Cases Button - No border radius */}
         <View className="rounded-lg overflow-hidden">
@@ -78,8 +87,8 @@ const navigation = useNavigation<NoCasesAddedNavigationProp>();
             end={{x: 1, y: 0}}
             className="w-full h-12 justify-center items-center">
             <Pressable
-                onPress={() => navigation.navigate('MultipleTypesSearchScreen')}          
-                className="w-full h-full justify-center items-center"
+              onPress={() => navigation.navigate('MultipleTypesSearchScreen')}
+              className="w-full h-full justify-center items-center"
               android_ripple={{color: 'rgba(255,255,255,0.2)'}}>
               <Text
                 style={{fontFamily: 'SpaceGrotesk-Bold'}}
